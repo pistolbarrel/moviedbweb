@@ -26,4 +26,9 @@ public class CollectionService {
     public List<Collection> getAll() {
         return collectionRepository.findAllByOrderByName();
     }
+
+    public Long getMovieCountById(long id) {
+        Long ret = collectionRepository.getCountOfMoviesById(id);
+        return ret;
+    }
 }

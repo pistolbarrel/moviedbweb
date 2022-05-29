@@ -26,4 +26,8 @@ public class DirectorService {
     public List<Director> getAll() {
         return directorRepository.findAllByOrderByName();
     }
+
+    public Long getMovieCountById(long id) {
+        return directorRepository.getCountOfMoviesById(id);
+    }
 }

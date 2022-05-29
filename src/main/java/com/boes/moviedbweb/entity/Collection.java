@@ -4,7 +4,6 @@ import com.boes.moviedbweb.utils.MovieHtmlHelper;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +19,9 @@ public class Collection {
     @GeneratedValue(generator = "sequence_collection")
     private Long collectionId;
     private String name;
+
+    @Transient
+    private Long count = 0L;
 
     public String getLinkString() {
         return MovieHtmlHelper.getCollectionLinkString(this);

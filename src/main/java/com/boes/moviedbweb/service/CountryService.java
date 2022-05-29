@@ -1,11 +1,7 @@
 package com.boes.moviedbweb.service;
 
-import com.boes.moviedbweb.entity.Collection;
 import com.boes.moviedbweb.entity.Country;
-import com.boes.moviedbweb.entity.Director;
-import com.boes.moviedbweb.repo.CollectionRepository;
 import com.boes.moviedbweb.repo.CountryRepository;
-import com.boes.moviedbweb.repo.DirectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +25,9 @@ public class CountryService {
 
     public List<Country> getAll() {
         return countryRepository.findAllByOrderByName();
+    }
+
+    public Long getMovieCountById(long id) {
+        return countryRepository.getCountOfMoviesById(id);
     }
 }

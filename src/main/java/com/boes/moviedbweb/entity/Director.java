@@ -3,10 +3,7 @@ package com.boes.moviedbweb.entity;
 import com.boes.moviedbweb.utils.MovieHtmlHelper;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -22,6 +19,9 @@ public class Director {
     @GeneratedValue(generator = "sequence_director")
     private Long directorId;
     private String name;
+
+    @Transient
+    private Long count = 0L;
 
     public String getLinkString() {
         return MovieHtmlHelper.getDirectorLinkString(this);

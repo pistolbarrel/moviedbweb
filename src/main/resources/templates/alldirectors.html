@@ -147,7 +147,8 @@
     <tbody>
     <div  th:each="entity: ${entities}">
         <tr>
-            <td class="xwide" th:utext="${entity.getLinkString()}"></td>
+            <td class="wide" th:utext="${entity.getLinkString()}"></td>
+            <td class="wide" th:utext="${entity.getCount()}"></td>
         </tr>
     </div>
     </tbody>

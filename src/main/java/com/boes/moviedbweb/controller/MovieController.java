@@ -2,17 +2,18 @@ package com.boes.moviedbweb.controller;
 
 import com.boes.moviedbweb.entity.*;
 import com.boes.moviedbweb.repo.MovieRepository;
-import com.boes.moviedbweb.service.*;
+import com.boes.moviedbweb.service.ActorService;
+import com.boes.moviedbweb.service.CollectionService;
+import com.boes.moviedbweb.service.CountryService;
+import com.boes.moviedbweb.service.DirectorService;
 import com.boes.moviedbweb.utils.MovieHtmlHelper;
 import com.boes.moviedbweb.utils.MovieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,9 @@ public class MovieController {
     @GetMapping("/alldirectors")
     public List<Director> getAllDirectors(Model model) {
         List<Director> directors = directorService.getAll();
+        for (Director director : directors) {
+            director.setCount(directorService.getMovieCountById(director.getDirectorId()));
+        }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Directors", String.valueOf(directors.stream().count())));
         model.addAttribute("entities", directors);
@@ -67,6 +71,9 @@ public class MovieController {
     @GetMapping("/allactors")
     public List<Actor> getAllActors(Model model) {
         List<Actor> actors = actorService.getAll();
+        for (Actor actor : actors) {
+            actor.setCount(actorService.getMovieCountById(actor.getActorId()));
+        }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Actors", String.valueOf(actors.stream().count())));
         model.addAttribute("entities", actors);
@@ -76,6 +83,9 @@ public class MovieController {
     @GetMapping("/allcollections")
     public List<Collection> getAllCollections(Model model) {
         List<Collection> collections = collectionService.getAll();
+        for (Collection collection : collections) {
+            collection.setCount(collectionService.getMovieCountById(collection.getCollectionId()));
+        }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Collections", String.valueOf(collections.stream().count())));
         model.addAttribute("entities", collections);
@@ -85,6 +95,12 @@ public class MovieController {
     @GetMapping("/allcountries")
     public List<Country> getAllCountries(Model model) {
         List<Country> countries = countryService.getAll();
+        // for each country_id
+        //      call getCountById(id)
+        //      update the country count transient field
+        for (Country country : countries) {
+            country.setCount(countryService.getMovieCountById(country.getCountryId()));
+        }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Countries", String.valueOf(countries.stream().count())));
         model.addAttribute("entities", countries);

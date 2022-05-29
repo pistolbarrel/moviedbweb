@@ -26,4 +26,8 @@ public class ActorService {
     public List<Actor> getAll() {
         return actorRepository.findAllByOrderByName();
     }
+
+    public Long getMovieCountById(long id) {
+        return actorRepository.getCountOfMoviesById(id);
+    }
 }
