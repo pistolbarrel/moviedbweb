@@ -1,14 +1,8 @@
 package com.boes.moviedbweb.controller;
 
-import com.boes.moviedbweb.entity.Actor;
-import com.boes.moviedbweb.entity.Collection;
-import com.boes.moviedbweb.entity.Director;
-import com.boes.moviedbweb.entity.Movie;
+import com.boes.moviedbweb.entity.*;
 import com.boes.moviedbweb.repo.MovieRepository;
-import com.boes.moviedbweb.service.ActorService;
-import com.boes.moviedbweb.service.CollectionService;
-import com.boes.moviedbweb.service.DirectorService;
-import com.boes.moviedbweb.service.MovieService;
+import com.boes.moviedbweb.service.*;
 import com.boes.moviedbweb.utils.MovieHtmlHelper;
 import com.boes.moviedbweb.utils.MovieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +23,19 @@ public class MovieController {
     private ActorService actorService;
     private DirectorService directorService;
     private CollectionService collectionService;
+    private CountryService countryService;
 
     private MovieUtils movieUtils = new MovieUtils();
 
     @Autowired
-    public MovieController(MovieRepository movieRepository, ActorService actorService, DirectorService directorService, CollectionService collectionService) {
+    public MovieController(MovieRepository movieRepository, ActorService actorService,
+                           DirectorService directorService, CollectionService collectionService,
+                           CountryService countryService) {
         this.movieRepository = movieRepository;
         this.actorService = actorService;
         this.directorService = directorService;
         this.collectionService = collectionService;
+        this.countryService = countryService;
     }
 
     @GetMapping("/movies")
@@ -79,9 +77,18 @@ public class MovieController {
     public List<Collection> getAllCollections(Model model) {
         List<Collection> collections = collectionService.getAll();
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("All Actors", String.valueOf(collections.stream().count())));
+                MovieHtmlHelper.getSearchedValue("All Collections", String.valueOf(collections.stream().count())));
         model.addAttribute("entities", collections);
         return collections;
+    }
+
+    @GetMapping("/allcountries")
+    public List<Country> getAllCountries(Model model) {
+        List<Country> countries = countryService.getAll();
+        model.addAttribute("searched",
+                MovieHtmlHelper.getSearchedValue("All Countries", String.valueOf(countries.stream().count())));
+        model.addAttribute("entities", countries);
+        return countries;
     }
 
 
@@ -90,7 +97,7 @@ public class MovieController {
         return getMovies(id, model, movieRepository);
     }
 
-    static List<Movie> getMovies(@RequestParam(value = "id", required = true) long id, Model model,
+    public List<Movie> getMovies(@RequestParam(value = "id", required = true) long id, Model model,
                                  MovieRepository movieRepository)
     {
         List<Movie> movies = movieRepository.findByDirectorId(id);
@@ -98,10 +105,7 @@ public class MovieController {
                 filter(a -> a.getDirectorId() == id)
                 .map(Director::getName)
                 .collect(Collectors.joining());
-        model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue(searchedOn, String.valueOf(movies.stream().count())));
-        model.addAttribute("movies", movies);
-        model.addAttribute("filterdBy", id);
+        updateModel(String.valueOf(id), model, movies, searchedOn);
         return movies;
     }
 
@@ -113,34 +117,44 @@ public class MovieController {
                 filter(a -> a.getActorId() == id)
                 .map(Actor::getName)
                 .collect(Collectors.joining());
-        model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue(searchedOn, String.valueOf(movies.stream().count())));
-        model.addAttribute("movies", movies);
-        model.addAttribute("filterdBy", id);
+        updateModel(String.valueOf(id), model, movies, searchedOn);
         return movies;
     }
 
-    @GetMapping("/series")
+    @GetMapping("/series") // aka Collections
     public List<Movie> getBySeriesId(@RequestParam(value = "id", required = true) long id, Model model) {
         List<Movie> movies = movieRepository.findByCollectionId(id);
         String searchedOn = movies.get(0).getCollections().stream().
                 filter(a -> a.getCollectionId() == id)
                 .map(Collection::getName)
                 .collect(Collectors.joining());
-        model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue(searchedOn, String.valueOf(movies.stream().count())));
-        model.addAttribute("movies", movies);
-        model.addAttribute("filterdBy", id);
-        return movies;
+        updateModel(String.valueOf(id), model, movies, searchedOn);
+       return movies;
     }
 
     @GetMapping("/year")
     public List<Movie> getByYear(@RequestParam(value = "id", required = true) String id, Model model) {
         List<Movie> movies = movieRepository.findByYearOrderByTitle(id);
+        updateModel(id, model, movies, id);
+        return movies;
+    }
+
+    @GetMapping("/country")
+    public List<Movie> getByCountryId(@RequestParam(value = "id", required = true) String id, Model model) {
+        long localId = Long.parseLong(id);
+        List<Movie> movies = movieRepository.findByCountryIdOOrderByTitle(localId);
+        String searchedOn = movies.get(0).getCountries().stream().
+                filter(a -> a.getCountryId() == localId)
+                .map(Country::getName)
+                .collect(Collectors.joining());
+        updateModel(id, model, movies, searchedOn);
+        return movies;
+    }
+
+    private void updateModel(String id, Model model, List<Movie> movies, String searchedOn) {
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue(id, String.valueOf(movies.stream().count())));
+                MovieHtmlHelper.getSearchedValue(searchedOn, String.valueOf(movies.stream().count())));
         model.addAttribute("movies", movies);
         model.addAttribute("filterdBy", id);
-        return movies;
     }
 }

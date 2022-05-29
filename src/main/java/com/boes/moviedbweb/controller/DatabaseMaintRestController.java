@@ -60,12 +60,28 @@ public class DatabaseMaintRestController {
         movie.addDate(getViewDateDBInstances(movieDto.getViewDate()));
         movieRepository.save(movie);
     }
+
+    @PutMapping(path = "/rest/addcountryonexisting")
+    public void addCountryOnExistingMovie(@Valid @RequestBody MovieDto movieDto) {
+        Movie movie = getMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
+        movie.addCountries(getCountryDBInstances(movieDto.getCountries()));
+        movieRepository.save(movie);
+    }
+
     @PutMapping("/rest/addviewdate")
     public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id,
                                                  @RequestParam(value = "date", required = true) String date,
                                                  Model model) {
         Movie movie = getMovieById(id);
         movie.addDate(getViewDateDBInstances(date));
+        movieRepository.save(movie);
+    }
+
+    @PutMapping("/rest/viewedagaintoday")
+    public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id,
+                                                 Model model) {
+        Movie movie = getMovieById(id);
+        movie.addDate(getViewDateDBInstances(LocalDate.now()));
         movieRepository.save(movie);
     }
 

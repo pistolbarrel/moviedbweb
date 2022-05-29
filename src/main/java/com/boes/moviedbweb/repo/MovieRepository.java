@@ -26,5 +26,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             value = "select * from movie m where m.movie_id in (select movie_id from movie_director where director_id=?1) order by m.year")
     List<Movie> findByDirectorId(long id);
 
+    @Query(nativeQuery = true,
+            value = "select * from movie m where m.movie_id in (select movie_id from movie_country where country_id=?1) order by m.title")
+    List<Movie> findByCountryIdOOrderByTitle(long id);
+
     List<Movie> searchAllByDateViewedIsNull();
 }

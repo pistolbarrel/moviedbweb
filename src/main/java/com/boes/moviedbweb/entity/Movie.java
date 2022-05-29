@@ -7,7 +7,6 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,11 +105,11 @@ public class Movie {
 
     public String getTitleBoxString() {
         return MovieHtmlHelper.getTitleBoxString(title, year, String.valueOf(movieId), duration,
-                collections, dateViewed);
+                collections, dateViewed, countries);
     }
 
     public String getDirectorLinkString() {
-        return MovieHtmlHelper.getDirectorLinkString(directors);
+        return MovieHtmlHelper.getDirectorsLinkString(directors);
     }
 
     public String getActorLinkString() {
