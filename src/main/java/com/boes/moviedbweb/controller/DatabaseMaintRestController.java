@@ -2,9 +2,9 @@ package com.boes.moviedbweb.controller;
 
 import com.boes.moviedbweb.dto.DurationDirectDto;
 import com.boes.moviedbweb.dto.MovieDto;
+import com.boes.moviedbweb.dto.MovieInfoDto;
 import com.boes.moviedbweb.entity.*;
-import com.boes.moviedbweb.entity.Collection;
-import com.boes.moviedbweb.repo.*;
+import com.boes.moviedbweb.repo.MovieRepository;
 import com.boes.moviedbweb.service.*;
 import com.boes.moviedbweb.utils.MovieUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 @RestController
 public class DatabaseMaintRestController {
@@ -79,14 +80,23 @@ public class DatabaseMaintRestController {
 
     @PutMapping("/rest/viewedagaintoday")
     public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id,
-                                                 Model model) {
+                                          Model model) {
         Movie movie = getMovieById(id);
         movie.addDate(getViewDateDBInstances(LocalDate.now()));
         movieRepository.save(movie);
     }
 
+    @PutMapping("/rest/createamoviefromtext")
+    public void createAMovieFromText(@RequestBody MovieInfoDto movieInfoDto) {
+        createMovieImpl(MovieInfoDto.convertToMovieDto(movieInfoDto));
+    }
+
     @PutMapping(path = "/rest/movie")
     public void createMovie(@Valid @RequestBody MovieDto movieDto) {
+        createMovieImpl(movieDto);
+    }
+
+    private void createMovieImpl(MovieDto movieDto) {
         Movie movie = getOrCreateMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
         if (!StringUtils.isBlank(movieDto.getDuration())) {
             movie.setDuration(MovieUtils.convertHHMMSSToInteger(movieDto.getDuration()));
