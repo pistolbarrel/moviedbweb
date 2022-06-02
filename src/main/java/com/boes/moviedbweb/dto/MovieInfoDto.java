@@ -20,7 +20,7 @@ public class MovieInfoDto {
     public static MovieDto convertToMovieDto(MovieInfoDto movieInfo) {
         List<String> extractedStrings = List.of(movieInfo.info.split("\r?\n|\r"));
         StringBuilder descriptionBuilder = new StringBuilder();
-        if (extractedStrings.size() > 12) {
+        if (extractedStrings.size() >= 12) {
             for (int idx = 10; idx < extractedStrings.size() - 1; idx++) {
                 descriptionBuilder.append(extractedStrings.get(idx));
                 descriptionBuilder.append(System.getProperty("line.separator"));

@@ -10,7 +10,6 @@ import com.boes.moviedbweb.utils.MovieUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -71,16 +70,14 @@ public class DatabaseMaintRestController {
 
     @PutMapping("/rest/addviewdate")
     public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id,
-                                                 @RequestParam(value = "date", required = true) String date,
-                                                 Model model) {
+                                          @RequestParam(value = "date", required = true) String date) {
         Movie movie = getMovieById(id);
         movie.addDate(getViewDateDBInstances(date));
         movieRepository.save(movie);
     }
 
     @PutMapping("/rest/viewedagaintoday")
-    public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id,
-                                          Model model) {
+    public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
         movie.addDate(getViewDateDBInstances(LocalDate.now()));
         movieRepository.save(movie);
@@ -89,6 +86,27 @@ public class DatabaseMaintRestController {
     @PutMapping("/rest/createamoviefromtext")
     public void createAMovieFromText(@RequestBody MovieInfoDto movieInfoDto) {
         createMovieImpl(MovieInfoDto.convertToMovieDto(movieInfoDto));
+    }
+
+    @PutMapping("/rest/deletemovie")
+    public void deleteMovieById(@RequestParam(value = "id", required = true) long id) {
+        Movie movie = getMovieById(id);
+        if (movie.getCollections() != null) {
+            movie.getCollections().clear();
+        }
+        if (movie.getCountries() != null) {
+            movie.getCountries().clear();
+        }
+        if (movie.getActors() != null) {
+            movie.getActors().clear();
+        }
+        if (movie.getDateViewed() != null) {
+            movie.getDateViewed().clear();
+        }
+        if (movie.getDirectors() != null) {
+            movie.getDirectors().clear();
+        }
+        movieRepository.delete(movie);
     }
 
     @PutMapping(path = "/rest/movie")
