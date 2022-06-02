@@ -91,21 +91,7 @@ public class DatabaseMaintRestController {
     @PutMapping("/rest/deletemovie")
     public void deleteMovieById(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
-        if (movie.getCollections() != null) {
-            movie.getCollections().clear();
-        }
-        if (movie.getCountries() != null) {
-            movie.getCountries().clear();
-        }
-        if (movie.getActors() != null) {
-            movie.getActors().clear();
-        }
-        if (movie.getDateViewed() != null) {
-            movie.getDateViewed().clear();
-        }
-        if (movie.getDirectors() != null) {
-            movie.getDirectors().clear();
-        }
+        Movie.removealljoineddata(movie);
         movieRepository.delete(movie);
     }
 

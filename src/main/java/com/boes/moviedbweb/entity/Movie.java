@@ -103,6 +103,24 @@ public class Movie {
         dateViewed.addAll(viewDates);
     }
 
+    static public void removealljoineddata(Movie movie) {
+        if (movie.getCollections() != null) {
+            movie.getCollections().clear();
+        }
+        if (movie.getCountries() != null) {
+            movie.getCountries().clear();
+        }
+        if (movie.getActors() != null) {
+            movie.getActors().clear();
+        }
+        if (movie.getDateViewed() != null) {
+            movie.getDateViewed().clear();
+        }
+        if (movie.getDirectors() != null) {
+            movie.getDirectors().clear();
+        }
+    }
+
     public String getTitleBoxString() {
         return MovieHtmlHelper.getTitleBoxString(title, year, String.valueOf(movieId), duration,
                 collections, dateViewed, countries);
