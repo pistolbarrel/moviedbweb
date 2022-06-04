@@ -1,12 +1,14 @@
 package com.boes.moviedbweb.controller;
 
 import com.boes.moviedbweb.dto.DurationDirectDto;
+import com.boes.moviedbweb.dto.MovieCollectionDto;
 import com.boes.moviedbweb.dto.MovieDto;
 import com.boes.moviedbweb.dto.MovieInfoDto;
 import com.boes.moviedbweb.entity.*;
 import com.boes.moviedbweb.repo.MovieRepository;
 import com.boes.moviedbweb.service.*;
 import com.boes.moviedbweb.utils.MovieUtils;
+import com.boes.moviedbweb.utils.Title;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,6 +88,22 @@ public class DatabaseMaintRestController {
     @PutMapping("/rest/createamoviefromtext")
     public void createAMovieFromText(@RequestBody MovieInfoDto movieInfoDto) {
         createOrUpdateMovieImpl(MovieInfoDto.convertToMovieDto(movieInfoDto));
+    }
+
+    @PutMapping("/rest/updatecollectionsonexisting")
+    public void updatecollectiononexisting(@RequestBody MovieCollectionDto movieCollectionDto) {
+        // going to look up each movie, if it exists, add the collection to it,
+        // else skip it.  Might be nice to return which movies were found.
+        String[] titlesWithYears = movieCollectionDto.getTitles().split(";");
+        for (String titleString : titlesWithYears) {
+            Title title = new Title(titleString.trim());
+            if (!movieRepository.existsByTitleAndYear(title.getName(), title.getYear())) {
+                continue;
+            }
+            Movie movie = getMovieByTitleAndYear(title.getName(), title.getYear());
+            movie.addCollections(getCollectionDBInstances(movieCollectionDto.getCollection()));
+            movieRepository.save(movie);
+        }
     }
 
     @PutMapping("/rest/deletemovie")

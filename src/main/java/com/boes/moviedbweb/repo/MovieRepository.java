@@ -14,6 +14,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findByYearOrderByTitle(String year);
     public List<Movie> findAllByOrderByTitleAsc();
 
+    boolean existsByTitleAndYear(String title, String year);
+
     @Query(nativeQuery = true,
             value = "select * from movie m where m.movie_id in (select movie_id from movie_collection where collection_id=?1) order by m.title")
     List<Movie> findByCollectionId(long id);

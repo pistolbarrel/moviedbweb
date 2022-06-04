@@ -1,5 +1,6 @@
 package com.boes.moviedbweb.dto;
 
+import com.boes.moviedbweb.utils.Title;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,15 +28,13 @@ public class MovieInfoDto {
                 descriptionBuilder.append(System.getProperty("line.separator"));
             }
         }
-        String s = extractedStrings.get(5);
 
-        String extractYear = s.substring(s.indexOf('(') + 1, s.indexOf(')'));
-        String extractTitle = s.substring(0, s.indexOf('(') - 1);
-        s = extractedStrings.get(7);
+        Title title = new Title(extractedStrings.get(5));
+        String s = extractedStrings.get(7);
         String fixedCountries = s.replace(",", ";");
         MovieDto dto = new MovieDto(
-                extractTitle,
-                replaceNoneWithEmpty(extractYear),
+                title.getName(),
+                replaceNoneWithEmpty(title.getYear()),
                 replaceNoneWithEmpty(descriptionBuilder.toString()),  // description
                 replaceNoneWithEmpty(extractedStrings.get(8)),    // actors
                 replaceNoneWithEmpty(extractedStrings.get(6)),    // directors
