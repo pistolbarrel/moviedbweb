@@ -30,4 +30,8 @@ public class DirectorService {
     public Long getMovieCountById(long id) {
         return directorRepository.getCountOfMoviesById(id);
     }
+
+    public void deleteDirector(Director director) {
+        directorRepository.delete(director);
+    }
 }

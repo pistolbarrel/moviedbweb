@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,8 +60,17 @@ public class MovieController {
     @GetMapping("/alldirectors")
     public List<Director> getAllDirectors(Model model) {
         List<Director> directors = directorService.getAll();
-        for (Director director : directors) {
+        // This loop sets the count of movies. If the count is zero,
+        // it removes the entry from the list. This is covering up
+        // that I'm not keeping my database 'tidy'. SO, tidy up as we go.
+        Iterator<Director> itr = directors.iterator();
+        while (itr.hasNext()) {
+            Director director = itr.next();
             director.setCount(directorService.getMovieCountById(director.getDirectorId()));
+            if (director.getCount() == 0) {
+                directorService.deleteDirector(director);
+                itr.remove();
+            }
         }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Directors", String.valueOf(directors.stream().count())));
@@ -71,8 +81,17 @@ public class MovieController {
     @GetMapping("/allactors")
     public List<Actor> getAllActors(Model model) {
         List<Actor> actors = actorService.getAll();
-        for (Actor actor : actors) {
+        // This loop sets the count of movies. If the count is zero,
+        // it removes the entry from the list. This is covering up
+        // that I'm not keeping my database 'tidy'.
+        Iterator<Actor> itr = actors.iterator();
+        while (itr.hasNext()) {
+            Actor actor = itr.next();
             actor.setCount(actorService.getMovieCountById(actor.getActorId()));
+            if (actor.getCount() == 0) {
+                actorService.deleteActor(actor);
+                itr.remove();
+            }
         }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Actors", String.valueOf(actors.stream().count())));
@@ -83,8 +102,17 @@ public class MovieController {
     @GetMapping("/allcollections")
     public List<Collection> getAllCollections(Model model) {
         List<Collection> collections = collectionService.getAll();
-        for (Collection collection : collections) {
+        // This loop sets the count of movies. If the count is zero,
+        // it removes the entry from the list. This is covering up
+        // that I'm not keeping my database 'tidy'.
+        Iterator<Collection> itr = collections.iterator();
+        while (itr.hasNext()) {
+            Collection collection = itr.next();
             collection.setCount(collectionService.getMovieCountById(collection.getCollectionId()));
+            if (collection.getCount() == 0) {
+                collectionService.deleteCollection(collection);
+                itr.remove();
+            }
         }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Collections", String.valueOf(collections.stream().count())));
@@ -95,11 +123,17 @@ public class MovieController {
     @GetMapping("/allcountries")
     public List<Country> getAllCountries(Model model) {
         List<Country> countries = countryService.getAll();
-        // for each country_id
-        //      call getCountById(id)
-        //      update the country count transient field
-        for (Country country : countries) {
+        // This loop sets the count of movies. If the count is zero,
+        // it removes the entry from the list. This is covering up
+        // that I'm not keeping my database 'tidy'.
+        Iterator<Country> itr = countries.iterator();
+        while (itr.hasNext()) {
+            Country country = itr.next();
             country.setCount(countryService.getMovieCountById(country.getCountryId()));
+            if (country.getCount() == 0) {
+                countryService.deleteCountry(country);
+                itr.remove();
+            }
         }
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Countries", String.valueOf(countries.stream().count())));

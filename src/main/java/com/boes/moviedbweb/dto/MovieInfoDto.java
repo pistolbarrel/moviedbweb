@@ -16,6 +16,7 @@ import java.util.List;
 public class MovieInfoDto {
     private String info;
     private String viewDate;
+    private boolean absolute;
 
     public static MovieDto convertToMovieDto(MovieInfoDto movieInfo) {
         List<String> extractedStrings = List.of(movieInfo.info.split("\r?\n|\r"));
@@ -41,10 +42,11 @@ public class MovieInfoDto {
                 replaceNoneWithEmpty(fixedCountries),
                 extractedStrings.get(3),    // collections
                 LocalDate.now().toString(), // viewDate
-                extractedStrings.get(2)     // duration
+                extractedStrings.get(2),    // duration
+                movieInfo.isAbsolute()
         );
         if (!StringUtils.isBlank(movieInfo.viewDate)) {
-            dto.setViewDate(movieInfo.viewDate);
+            dto.setViewDate(replaceNoneWithEmpty(movieInfo.viewDate));
         }
         return dto;
     }

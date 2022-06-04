@@ -1,6 +1,5 @@
 package com.boes.moviedbweb.dto;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -25,8 +24,13 @@ public class MovieDto {
     @javax.validation.constraints.NotNull
     private String collections;
     // in the form yyyy/mm/dd
-    @Pattern(regexp="^\\d{4}-\\d{2}-\\d{2}$", message="date should be in yyyy-mm-dd format")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "date should be in yyyy-mm-dd format")
     private String viewDate;
-//    @Pattern(regexp = "^(?:(?:([01]?\\d|2[0-3]):)?([0-5]?\\d):)?([0-5]?\\d)$", message = "duration in HH:MM:SS")
+    //    @Pattern(regexp = "^(?:(?:([01]?\\d|2[0-3]):)?([0-5]?\\d):)?([0-5]?\\d)$", message = "duration in HH:MM:SS")
     private String duration;
+
+    // used in update mode to delete all prior linked data including
+    // actors, directors, countries, and collections.
+    // viewDates ARE LEFT INTACT.
+    private boolean absolute = false;
 }

@@ -30,4 +30,8 @@ public class ActorService {
     public Long getMovieCountById(long id) {
         return actorRepository.getCountOfMoviesById(id);
     }
+
+    public void deleteActor(Actor actor) {
+        actorRepository.delete(actor);
+    }
 }

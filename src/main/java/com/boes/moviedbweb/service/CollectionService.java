@@ -31,4 +31,8 @@ public class CollectionService {
         Long ret = collectionRepository.getCountOfMoviesById(id);
         return ret;
     }
+
+    public void deleteCollection(Collection collection) {
+        collectionRepository.delete(collection);
+    }
 }

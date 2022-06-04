@@ -85,23 +85,32 @@ public class DatabaseMaintRestController {
 
     @PutMapping("/rest/createamoviefromtext")
     public void createAMovieFromText(@RequestBody MovieInfoDto movieInfoDto) {
-        createMovieImpl(MovieInfoDto.convertToMovieDto(movieInfoDto));
+        createOrUpdateMovieImpl(MovieInfoDto.convertToMovieDto(movieInfoDto));
     }
 
     @PutMapping("/rest/deletemovie")
     public void deleteMovieById(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
-        Movie.removealljoineddata(movie);
+        Movie.removeAllJoinedDataExceptDates(movie);
+        // for a delete, even the dates must go.
+        if (movie.getDateViewed() != null) {
+            movie.getDateViewed().clear();
+        }
         movieRepository.delete(movie);
     }
 
     @PutMapping(path = "/rest/movie")
     public void createMovie(@Valid @RequestBody MovieDto movieDto) {
-        createMovieImpl(movieDto);
+        createOrUpdateMovieImpl(movieDto);
     }
 
-    private void createMovieImpl(MovieDto movieDto) {
+    private void createOrUpdateMovieImpl(MovieDto movieDto) {
         Movie movie = getOrCreateMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
+        // This will remove all linked data to a movie. For a newly created
+        // db entity, this is a noop.
+        if (movieDto.isAbsolute()) {
+            Movie.removeAllJoinedDataExceptDates(movie);
+        }
         if (!StringUtils.isBlank(movieDto.getDuration())) {
             movie.setDuration(MovieUtils.convertHHMMSSToInteger(movieDto.getDuration()));
         }

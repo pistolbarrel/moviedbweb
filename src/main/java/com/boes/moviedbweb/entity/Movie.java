@@ -103,7 +103,7 @@ public class Movie {
         dateViewed.addAll(viewDates);
     }
 
-    static public void removealljoineddata(Movie movie) {
+    static public void removeAllJoinedDataExceptDates(Movie movie) {
         if (movie.getCollections() != null) {
             movie.getCollections().clear();
         }
@@ -112,9 +112,6 @@ public class Movie {
         }
         if (movie.getActors() != null) {
             movie.getActors().clear();
-        }
-        if (movie.getDateViewed() != null) {
-            movie.getDateViewed().clear();
         }
         if (movie.getDirectors() != null) {
             movie.getDirectors().clear();

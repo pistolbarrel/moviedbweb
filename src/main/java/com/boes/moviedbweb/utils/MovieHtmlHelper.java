@@ -7,11 +7,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class MovieHtmlHelper {
-    private static final String allMoviesUrl = "http://localhost:8080/movies";
-    private static final String allDirectorsUrl = "http://localhost:8080/alldirectors";
-    private static final String allActorsUrl = "http://localhost:8080/allactors";
-    private static final String allCollectionsUrl = "http://localhost:8080/allcollections";
-    private static final String allCountriesUrl = "http://localhost:8080/allcountries";
+    private static final String allMoviesUrl = "/movies";
+    private static final String allDirectorsUrl = "/alldirectors";
+    private static final String allActorsUrl = "/allactors";
+    private static final String allCollectionsUrl = "/allcollections";
+    private static final String allCountriesUrl = "/allcountries";
 
     public static String getYearLinkString(String year) {
         if (year.isEmpty()) return year;

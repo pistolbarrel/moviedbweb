@@ -30,4 +30,8 @@ public class CountryService {
     public Long getMovieCountById(long id) {
         return countryRepository.getCountOfMoviesById(id);
     }
+
+    public void deleteCountry(Country country) {
+        countryRepository.delete(country);
+    }
 }
