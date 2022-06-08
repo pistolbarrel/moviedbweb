@@ -9,6 +9,7 @@ import com.boes.moviedbweb.repo.MovieRepository;
 import com.boes.moviedbweb.service.*;
 import com.boes.moviedbweb.utils.MovieUtils;
 import com.boes.moviedbweb.utils.Title;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 @RestController
+@Slf4j
 public class DatabaseMaintRestController {
 
 
@@ -109,6 +111,7 @@ public class DatabaseMaintRestController {
     @PutMapping("/rest/deletemovie")
     public void deleteMovieById(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
+        log.info("Deleting movie = " + movie.getTitle() + " (" + movie.getYear() + ")");
         Movie.removeAllJoinedDataExceptDates(movie);
         // for a delete, even the dates must go.
         if (movie.getDateViewed() != null) {
@@ -123,6 +126,7 @@ public class DatabaseMaintRestController {
     }
 
     private void createOrUpdateMovieImpl(MovieDto movieDto) {
+        log.info("movieDto = " + movieDto);
         Movie movie = getOrCreateMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
         // This will remove all linked data to a movie. For a newly created
         // db entity, this is a noop.

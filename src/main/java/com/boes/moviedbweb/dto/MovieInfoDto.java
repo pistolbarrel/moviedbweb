@@ -28,7 +28,7 @@ public class MovieInfoDto {
         final int DIRECTORS_INDEX = 6;
         final int COUNTRIES_INDEX = 7;
         final int ACTORS_INDEX = 8;
-        final int DESCRIPTION_INDEX = 9;
+        final int DESCRIPTION_INDEX = 10;
 
         List<String> extractedStrings = List.of(movieInfo.info.split("\r?\n|\r"));
         int parseAdjust = 0;

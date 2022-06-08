@@ -8,6 +8,8 @@ import com.boes.moviedbweb.service.CountryService;
 import com.boes.moviedbweb.service.DirectorService;
 import com.boes.moviedbweb.utils.MovieHtmlHelper;
 import com.boes.moviedbweb.utils.MovieUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +42,7 @@ public class MovieController {
         this.countryService = countryService;
     }
 
+    @Operation(summary = "Returns a list of all of the movies in the database.")
     @GetMapping("/movies")
     public List<Movie> getAllMovies(Model model) {
         List<Movie> movies = movieRepository.findAllByOrderByTitleAsc();
@@ -57,6 +60,7 @@ public class MovieController {
         return movies;
     }
 
+    @Operation(summary = "Returns a list of all the directors that exist in the database.")
     @GetMapping("/alldirectors")
     public List<Director> getAllDirectors(Model model) {
         List<Director> directors = directorService.getAll();
@@ -78,6 +82,7 @@ public class MovieController {
         return directors;
     }
 
+    @Operation(summary = "Returns a list of all the actors that exist in the database.")
     @GetMapping("/allactors")
     public List<Actor> getAllActors(Model model) {
         List<Actor> actors = actorService.getAll();
@@ -99,6 +104,7 @@ public class MovieController {
         return actors;
     }
 
+    @Operation(summary = "Returns a list of all the collections that exist in the database.")
     @GetMapping("/allcollections")
     public List<Collection> getAllCollections(Model model) {
         List<Collection> collections = collectionService.getAll();
@@ -120,6 +126,7 @@ public class MovieController {
         return collections;
     }
 
+    @Operation(summary = "Returns a list of all the countries that exist in the database.")
     @GetMapping("/allcountries")
     public List<Country> getAllCountries(Model model) {
         List<Country> countries = countryService.getAll();
@@ -142,8 +149,10 @@ public class MovieController {
     }
 
 
+    @Operation(summary = "Returns a list of all the movies by the given director.")
     @GetMapping("/director")
-    public List<Movie> getByDirectorId(@RequestParam(value = "id", required = true) long id, Model model) {
+    public List<Movie> getByDirectorId(@Parameter(description = "id of the director to be searched")
+                                       @RequestParam(value = "id", required = true) long id, Model model) {
         return getMovies(id, model, movieRepository);
     }
 
@@ -160,8 +169,10 @@ public class MovieController {
     }
 
 
+    @Operation(summary = "Returns a list of all the movies by the given actor.")
     @GetMapping("/actor")
-    public List<Movie> getByActorId(@RequestParam(value = "id", required = true) long id, Model model) {
+    public List<Movie> getByActorId(@Parameter(description = "id of the actor to be searched")
+                                    @RequestParam(value = "id", required = true) long id, Model model) {
         List<Movie> movies = movieRepository.findByActorId(id);
         String searchedOn = movies.get(0).getActors().stream().
                 filter(a -> a.getActorId() == id)
@@ -171,26 +182,32 @@ public class MovieController {
         return movies;
     }
 
+    @Operation(summary = "Returns a list of all the movies in a given collection.")
     @GetMapping("/series") // aka Collections
-    public List<Movie> getBySeriesId(@RequestParam(value = "id", required = true) long id, Model model) {
+    public List<Movie> getBySeriesId(@Parameter(description = "id of the collection to be searched")
+                                     @RequestParam(value = "id", required = true) long id, Model model) {
         List<Movie> movies = movieRepository.findByCollectionId(id);
         String searchedOn = movies.get(0).getCollections().stream().
                 filter(a -> a.getCollectionId() == id)
                 .map(Collection::getName)
                 .collect(Collectors.joining());
         updateModel(String.valueOf(id), model, movies, searchedOn);
-       return movies;
+        return movies;
     }
 
+    @Operation(summary = "Returns a list of all the movies released in a specified year.")
     @GetMapping("/year")
-    public List<Movie> getByYear(@RequestParam(value = "id", required = true) String id, Model model) {
+    public List<Movie> getByYear(@Parameter(description = "the four digit year to be searched")
+                                 @RequestParam(value = "id", required = true) String id, Model model) {
         List<Movie> movies = movieRepository.findByYearOrderByTitle(id);
         updateModel(id, model, movies, id);
         return movies;
     }
 
+    @Operation(summary = "Returns a list of all the movies from a given country.")
     @GetMapping("/country")
-    public List<Movie> getByCountryId(@RequestParam(value = "id", required = true) String id, Model model) {
+    public List<Movie> getByCountryId(@Parameter(description = "id of the collection to be searched")
+                                      @RequestParam(value = "id", required = true) String id, Model model) {
         long localId = Long.parseLong(id);
         List<Movie> movies = movieRepository.findByCountryIdOOrderByTitle(localId);
         String searchedOn = movies.get(0).getCountries().stream().
@@ -207,4 +224,5 @@ public class MovieController {
         model.addAttribute("movies", movies);
         model.addAttribute("filterdBy", id);
     }
+
 }

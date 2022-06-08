@@ -18,7 +18,7 @@ class MovieInfoDtoTest {
                 "\n" +
                 "Georges (Jean-Louis Trintignant) and Anne (Emmanuelle Riva) are cultivated, retired music teachers who have known a lifetime of love within their marriage. Though their bond has survived time’s test, it’s about to meet its greatest challenge when Anne suffers a stroke. Featuring tour-de-force performances from Trintignant, Riva, and Isabelle Huppert, Michael Haneke’s heartrending human drama—winner of both the Palme d’Or and the Academy Award for Best Foreign Language Film—exalts the beautiful, compassionate, and courageous within us all.\n" +
                 "======================================================\n");
-        MovieInfoDto movieInfoDto = new MovieInfoDto(info, "");
+        MovieInfoDto movieInfoDto = new MovieInfoDto(info, "", false);
         MovieDto dto = MovieInfoDto.convertToMovieDto(movieInfoDto);
     }
 }

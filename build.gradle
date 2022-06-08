@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.hibernate.validator:hibernate-validator'
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.4'
 	compileOnly 'org.projectlombok:lombok'
 	compileOnly 'javax.validation:validation-api'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
