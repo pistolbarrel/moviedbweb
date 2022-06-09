@@ -32,5 +32,12 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             value = "select * from movie m where m.movie_id in (select movie_id from movie_country where country_id=?1) order by m.title")
     List<Movie> findByCountryIdOOrderByTitle(long id);
 
+    @Query(nativeQuery = true,
+            value = "select m.* from movie m where m.movie_id in \n" +
+                    "(select mvd.movie_id from movie_viewdate mvd where mvd.date_id in \n" +
+                    "(select vd.date_id from view_date vd " +
+                    "where local_date BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()))")
+    List<Movie> findViewedInLast30Days();
+
     List<Movie> searchAllByDateViewedIsNull();
 }

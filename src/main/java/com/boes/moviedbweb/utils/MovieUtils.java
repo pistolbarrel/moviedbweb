@@ -1,8 +1,9 @@
 package com.boes.moviedbweb.utils;
 
-import java.text.SimpleDateFormat;
+import com.boes.moviedbweb.entity.ViewDate;
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Set;
 
 public class MovieUtils {
 
@@ -43,5 +44,11 @@ public class MovieUtils {
 
     public static LocalDate convertStringToDate(String dateString) {
         return LocalDate.parse(dateString);
+    }
+
+    public static String getLastViewedDate(Set<ViewDate> viewDates) {
+        if (viewDates != null && !viewDates.isEmpty())
+            return viewDates.stream().map(ViewDate::getLocalDate).max(LocalDate::compareTo).get().toString();
+        return "never";
     }
 }

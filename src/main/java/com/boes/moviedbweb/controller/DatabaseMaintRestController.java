@@ -62,6 +62,8 @@ public class DatabaseMaintRestController {
     public void updateViewDate(@Valid @RequestBody MovieDto movieDto) {
         Movie movie = getMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
         movie.addDate(getViewDateDBInstances(movieDto.getViewDate()));
+        log.info("Added viewDate of " + movieDto.getViewDate() + " to "
+                + movie.getDisplayName());
         movieRepository.save(movie);
     }
 
@@ -69,6 +71,8 @@ public class DatabaseMaintRestController {
     public void addCountryOnExistingMovie(@Valid @RequestBody MovieDto movieDto) {
         Movie movie = getMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
         movie.addCountries(getCountryDBInstances(movieDto.getCountries()));
+        log.info("Added the countries " + movieDto.getCountries().trim() + " to "
+                + movie.getDisplayName());
         movieRepository.save(movie);
     }
 
@@ -77,6 +81,7 @@ public class DatabaseMaintRestController {
                                           @RequestParam(value = "date", required = true) String date) {
         Movie movie = getMovieById(id);
         movie.addDate(getViewDateDBInstances(date));
+        log.info("Added viewDate of " + date + " to " + movie.getDisplayName());
         movieRepository.save(movie);
     }
 
@@ -84,6 +89,7 @@ public class DatabaseMaintRestController {
     public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
         movie.addDate(getViewDateDBInstances(LocalDate.now()));
+        log.info("Added viewDate of today to " + movie.getDisplayName());
         movieRepository.save(movie);
     }
 
@@ -97,21 +103,27 @@ public class DatabaseMaintRestController {
         // going to look up each movie, if it exists, add the collection to it,
         // else skip it.  Might be nice to return which movies were found.
         String[] titlesWithYears = movieCollectionDto.getTitles().split(";");
+        StringBuilder sb = new StringBuilder();
         for (String titleString : titlesWithYears) {
             Title title = new Title(titleString.trim());
             if (!movieRepository.existsByTitleAndYear(title.getName(), title.getYear())) {
                 continue;
             }
+            sb.append(title.getDisplayName() + ";");
             Movie movie = getMovieByTitleAndYear(title.getName(), title.getYear());
-            movie.addCollections(getCollectionDBInstances(movieCollectionDto.getCollection()));
+            movie.addCollections(getCollectionDBInstances(movieCollectionDto.getCollection().trim()));
             movieRepository.save(movie);
         }
+        if (sb.toString().isEmpty()) {
+            sb.append("None");
+        }
+        log.info("Added series " + movieCollectionDto.getCollection().trim() + " to " + sb.toString());
     }
 
     @PutMapping("/rest/deletemovie")
     public void deleteMovieById(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
-        log.info("Deleting movie = " + movie.getTitle() + " (" + movie.getYear() + ")");
+        log.info("Deleting movie = " + movie.getDisplayName());
         Movie.removeAllJoinedDataExceptDates(movie);
         // for a delete, even the dates must go.
         if (movie.getDateViewed() != null) {
@@ -126,7 +138,7 @@ public class DatabaseMaintRestController {
     }
 
     private void createOrUpdateMovieImpl(MovieDto movieDto) {
-        log.info("movieDto = " + movieDto);
+        log.info("Creating of Modifying movie with movieDto =" + movieDto);
         Movie movie = getOrCreateMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
         // This will remove all linked data to a movie. For a newly created
         // db entity, this is a noop.

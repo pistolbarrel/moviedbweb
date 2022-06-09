@@ -15,4 +15,8 @@ public class Title {
         year = titleAndYear.substring(titleAndYear.indexOf('(') + 1, titleAndYear.indexOf(')'));
         name = titleAndYear.substring(0, titleAndYear.indexOf('(') - 1);
     }
+
+    public String getDisplayName() {
+        return new String(name + " (" + year + ")");
+    }
 }

@@ -2,7 +2,6 @@ package com.boes.moviedbweb.utils;
 
 import com.boes.moviedbweb.entity.*;
 
-import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,7 @@ public final class MovieHtmlHelper {
     private static final String allActorsUrl = "/allactors";
     private static final String allCollectionsUrl = "/allcollections";
     private static final String allCountriesUrl = "/allcountries";
+    private static final String viewedLast30DaysUrl = "/viewedinlast30days";
 
     public static String getYearLinkString(String year) {
         if (year.isEmpty()) return year;
@@ -30,7 +30,7 @@ public final class MovieHtmlHelper {
                 + "<div class=\"tiny\">" + MovieUtils.getDisplayDuration(duration)
                 + "&nbsp&nbsp&nbsp&nbsp&nbsp[" + id
                 + "]&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspViewed " + viewCount + " "
-                + timeTimes + ", last on " + getLastViewedDate(viewDates) + "<br><br>"
+                + timeTimes + ", last on " + MovieUtils.getLastViewedDate(viewDates) + "<br><br>"
                 + getCountiesLinkString(countries)
                 + "</div><br>"
                 + collections.stream().map(Collection::getLinkString).collect(Collectors.joining("<br>"));
@@ -40,12 +40,6 @@ public final class MovieHtmlHelper {
         if (countries!= null && !countries.isEmpty())
             return countries.stream().map(Country::getLinkString).collect(Collectors.joining(", "));
         return "";
-    }
-
-    public static String getLastViewedDate(Set<ViewDate> viewDates) {
-        if (viewDates!= null && !viewDates.isEmpty())
-            return viewDates.stream().map(ViewDate::getLocalDate).max(LocalDate::compareTo).get().toString();
-        return "never";
     }
 
     public static String getDirectorsLinkString(Set<Director> directors) {
@@ -59,84 +53,43 @@ public final class MovieHtmlHelper {
     }
 
     public static String getActorLinkString(Actor actor) {
-        StringBuilder sb = new StringBuilder("<a href=\"/actor?id=");
-        sb.append(actor.getActorId());
-        sb.append("\">");
-        sb.append(actor.getName());
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen("/actor?id=" + actor.getActorId(), actor.getName());
     }
 
     public static String getCollectionLinkString(Collection collection) {
-        StringBuilder sb = new StringBuilder("<a href=\"/series?id=");
-        sb.append(collection.getCollectionId());
-        sb.append("\">");
-        sb.append(collection.getName());
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen("/series?id=" + collection.getCollectionId(), collection.getName());
     }
 
     public static String getCountyLinkString(Country country) {
-        StringBuilder sb = new StringBuilder("<a href=\"/country?id=");
-        sb.append(country.getCountryId());
-        sb.append("\">");
-        sb.append(country.getName());
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen("/country?id=" + country.getCountryId(), country.getName());
     }
 
     public static String getDirectorLinkString(Director director) {
-        StringBuilder sb = new StringBuilder("<a href=\"/director?id=");
-        sb.append(director.getDirectorId());
-        sb.append("\">");
-        sb.append(director.getName());
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen("/director?id=" + director.getDirectorId(), director.getName());
     }
 
     public static String getAllMoviesLink() {
-        StringBuilder sb = new StringBuilder("<a href=\"");
-        sb.append(allMoviesUrl);
-        sb.append("\">");
-        sb.append(" All Movies");
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen(allMoviesUrl, " All Movies");
     }
 
     public static String getAllDirectorsLink() {
-        StringBuilder sb = new StringBuilder("<a href=\"");
-        sb.append(allDirectorsUrl);
-        sb.append("\">");
-        sb.append(" All Directors");
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen(allDirectorsUrl, " All Directors");
     }
 
     public static String getAllActorsLink() {
-        StringBuilder sb = new StringBuilder("<a href=\"");
-        sb.append(allActorsUrl);
-        sb.append("\">");
-        sb.append(" All Actors");
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen(allActorsUrl, " All Actors");
     }
 
     public static String getAllCollectionsLink() {
-        StringBuilder sb = new StringBuilder("<a href=\"");
-        sb.append(allCollectionsUrl);
-        sb.append("\">");
-        sb.append(" All Collections");
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen(allCollectionsUrl, " All Collections");
     }
 
     public static String getAllCountriesLink() {
-        StringBuilder sb = new StringBuilder("<a href=\"");
-        sb.append(allCountriesUrl);
-        sb.append("\">");
-        sb.append(" All Countries");
-        sb.append("</a>");
-        return sb.toString();
+        return linkGen(allCountriesUrl, " All Countries");
+    }
+
+    private static String getViewedLast30DaysUrlLink() {
+        return linkGen(viewedLast30DaysUrl, " Viewed in last 30 days");
     }
 
     public static String getSearchedValue(String searchTerm, String numberOfResults) {
@@ -152,8 +105,20 @@ public final class MovieHtmlHelper {
         sb.append(getAllCollectionsLink());
         sb.append("&nbsp&nbsp&nbsp&nbsp&nbsp");
         sb.append(getAllCountriesLink());
+        sb.append("&nbsp&nbsp&nbsp&nbsp&nbsp");
+        sb.append(getViewedLast30DaysUrlLink());
         sb.append("</div>");
         return sb.toString();
+    }
+
+    private static String linkGen(String url, String link_text) {
+        StringBuilder sb = new StringBuilder("<a href=\"");
+        sb.append(url);
+        sb.append("\">");
+        sb.append(link_text);
+        sb.append("</a>");
+        return sb.toString();
+
     }
 
 }

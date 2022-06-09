@@ -1,5 +1,6 @@
 package com.boes.moviedbweb.controller;
 
+import com.boes.moviedbweb.entity.Collection;
 import com.boes.moviedbweb.entity.*;
 import com.boes.moviedbweb.repo.MovieRepository;
 import com.boes.moviedbweb.service.ActorService;
@@ -16,8 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -42,7 +42,7 @@ public class MovieController {
         this.countryService = countryService;
     }
 
-    @Operation(summary = "Returns a list of all of the movies in the database.")
+    @Operation(summary = "Returns all of the movies in the database.")
     @GetMapping("/movies")
     public List<Movie> getAllMovies(Model model) {
         List<Movie> movies = movieRepository.findAllByOrderByTitleAsc();
@@ -60,7 +60,7 @@ public class MovieController {
         return movies;
     }
 
-    @Operation(summary = "Returns a list of all the directors that exist in the database.")
+    @Operation(summary = "Returns all of the directors in the database.")
     @GetMapping("/alldirectors")
     public List<Director> getAllDirectors(Model model) {
         List<Director> directors = directorService.getAll();
@@ -82,7 +82,7 @@ public class MovieController {
         return directors;
     }
 
-    @Operation(summary = "Returns a list of all the actors that exist in the database.")
+    @Operation(summary = "Returns all of the actors in the database.")
     @GetMapping("/allactors")
     public List<Actor> getAllActors(Model model) {
         List<Actor> actors = actorService.getAll();
@@ -104,7 +104,7 @@ public class MovieController {
         return actors;
     }
 
-    @Operation(summary = "Returns a list of all the collections that exist in the database.")
+    @Operation(summary = "Returns all of the collections in the database.")
     @GetMapping("/allcollections")
     public List<Collection> getAllCollections(Model model) {
         List<Collection> collections = collectionService.getAll();
@@ -126,7 +126,7 @@ public class MovieController {
         return collections;
     }
 
-    @Operation(summary = "Returns a list of all the countries that exist in the database.")
+    @Operation(summary = "Returns all of the countries in the database.")
     @GetMapping("/allcountries")
     public List<Country> getAllCountries(Model model) {
         List<Country> countries = countryService.getAll();
@@ -148,8 +148,32 @@ public class MovieController {
         return countries;
     }
 
+    @Operation(summary = "Returns the movies viewed in the last 30 days.")
+    @GetMapping("/viewedinlast30days")
+    public List<Movie> getViewedInLast30Days(Model model) {
+        List<Movie> movies = movieRepository.findViewedInLast30Days();
+        for (Movie movie : movies) {
+            movie.setLastViewedDate(MovieUtils.getLastViewedDate(movie.getDateViewed()));
+        }
+        movies = movies.stream().distinct().collect(Collectors.toList());
+        Collections.sort(movies, Comparator.comparing(Movie::getLastViewedDate));
+        Collections.reverse(movies);
+        model.addAttribute("searched",
+                MovieHtmlHelper.getSearchedValue("Movies Viewed in last 30 Days", String.valueOf(movies.stream().count())));
+        model.addAttribute("movies", movies);
+        return movies;
 
-    @Operation(summary = "Returns a list of all the movies by the given director.")
+    }
+
+
+    @Operation(summary = "Returns the movies by id.")
+    @GetMapping("/movie")
+    public List<Movie> getMovieById(@Parameter(description = "id of the movie to be searched")
+                                    @RequestParam(value = "id", required = true) long id, Model model) {
+        return Arrays.asList(movieRepository.getById(id));
+    }
+
+    @Operation(summary = "Returns the movies by the given director.")
     @GetMapping("/director")
     public List<Movie> getByDirectorId(@Parameter(description = "id of the director to be searched")
                                        @RequestParam(value = "id", required = true) long id, Model model) {
@@ -157,8 +181,7 @@ public class MovieController {
     }
 
     public List<Movie> getMovies(@RequestParam(value = "id", required = true) long id, Model model,
-                                 MovieRepository movieRepository)
-    {
+                                 MovieRepository movieRepository) {
         List<Movie> movies = movieRepository.findByDirectorId(id);
         String searchedOn = movies.get(0).getDirectors().stream().
                 filter(a -> a.getDirectorId() == id)
@@ -169,7 +192,7 @@ public class MovieController {
     }
 
 
-    @Operation(summary = "Returns a list of all the movies by the given actor.")
+    @Operation(summary = "Returns the movies by the given actor.")
     @GetMapping("/actor")
     public List<Movie> getByActorId(@Parameter(description = "id of the actor to be searched")
                                     @RequestParam(value = "id", required = true) long id, Model model) {
@@ -182,7 +205,7 @@ public class MovieController {
         return movies;
     }
 
-    @Operation(summary = "Returns a list of all the movies in a given collection.")
+    @Operation(summary = "Returns the movies in a given collection.")
     @GetMapping("/series") // aka Collections
     public List<Movie> getBySeriesId(@Parameter(description = "id of the collection to be searched")
                                      @RequestParam(value = "id", required = true) long id, Model model) {
@@ -195,7 +218,7 @@ public class MovieController {
         return movies;
     }
 
-    @Operation(summary = "Returns a list of all the movies released in a specified year.")
+    @Operation(summary = "Returns the movies released in a specified year.")
     @GetMapping("/year")
     public List<Movie> getByYear(@Parameter(description = "the four digit year to be searched")
                                  @RequestParam(value = "id", required = true) String id, Model model) {
@@ -204,7 +227,7 @@ public class MovieController {
         return movies;
     }
 
-    @Operation(summary = "Returns a list of all the movies from a given country.")
+    @Operation(summary = "Returns the movies from a given country.")
     @GetMapping("/country")
     public List<Movie> getByCountryId(@Parameter(description = "id of the collection to be searched")
                                       @RequestParam(value = "id", required = true) String id, Model model) {

@@ -78,6 +78,10 @@ public class Movie {
     )
     private Set<Country> countries;
 
+    @Transient
+    private String lastViewedDate;
+
+
     public void addActors(Set<Actor> addActors) {
         if (actors == null) actors = new HashSet<>();
         actors.addAll(addActors);
@@ -116,6 +120,10 @@ public class Movie {
         if (movie.getDirectors() != null) {
             movie.getDirectors().clear();
         }
+    }
+
+    public String getDisplayName() {
+        return new String(title + " (" + year + ")");
     }
 
     public String getTitleBoxString() {
