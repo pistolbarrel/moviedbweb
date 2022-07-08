@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -118,6 +119,28 @@ public class DatabaseMaintRestController {
             sb.append("None");
         }
         log.info("Added series " + movieCollectionDto.getCollection().trim() + " to " + sb.toString());
+    }
+
+    @PutMapping("/rest/moviestowatch")
+    public void getmoviestowatch(@RequestBody MovieCollectionDto movieCollectionDto) {
+        // going to look up each movie, if it exists and never viewed, report it.
+        String[] titlesWithYears = movieCollectionDto.getTitles().split(";");
+        StringBuilder sb = new StringBuilder();
+        for (String titleString : titlesWithYears) {
+            Title title = new Title(titleString.trim());
+            if (!movieRepository.existsByTitleAndYear(title.getName(), title.getYear())) {
+                continue;
+            }
+            Movie movie = getMovieByTitleAndYear(title.getName(), title.getYear());
+            if (movie.getDateViewed().isEmpty()) {
+                sb.append(movie.getCollections().stream()
+                        .map(Collection::getName)
+                        .collect(Collectors.joining(";")));
+
+                sb.append(":" + title.getDisplayName() + "\n");
+            }
+        }
+        log.info("Movies to watch this month:\n" + sb.toString());
     }
 
     @PutMapping("/rest/deletemovie")

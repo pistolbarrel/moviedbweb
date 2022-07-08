@@ -11,10 +11,23 @@
         }
 
         /* Layout */
-        html, body { margin: 3px; padding: 0; }
-        #leftcol, #rightcol { width: 49%; height: 100%; }
-        #leftcol { float: left; }
-        #rightcol { float: right; }
+        html, body {
+            margin: 3px;
+            padding: 0;
+        }
+
+        #leftcol, #rightcol {
+            width: 49%;
+            height: 100%;
+        }
+
+        #leftcol {
+            float: left;
+        }
+
+        #rightcol {
+            float: right;
+        }
 
         h1, h2, h3 {
             padding: 0.2em;
@@ -36,7 +49,9 @@
             color: #5c7a1f;
         }
 
-        #leftcol p, #rightcol p { margin-left: 1em; }
+        #leftcol p, #rightcol p {
+            margin-left: 1em;
+        }
 
         div.code {
             font-family: monospace;
@@ -145,7 +160,7 @@
 <h1 th:utext="${searched}"></h1>
 <table>
     <tbody>
-    <div  th:each="entity: ${entities}">
+    <div th:each="entity: ${entities}">
         <tr>
             <td class="wide" th:utext="${entity.getLinkString()}"></td>
             <td class="wide" th:utext="${entity.getCount()}"></td>

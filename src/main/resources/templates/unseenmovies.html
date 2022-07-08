@@ -5,140 +5,155 @@
     <style type="text/css">
 
 
-    body {
-    font-family: 'Trebuchet Ms', Verdana, Arial, sans-serif;
-    padding: 0 1em 1em 1em;
-    }
+        body {
+            font-family: 'Trebuchet Ms', Verdana, Arial, sans-serif;
+            padding: 0 1em 1em 1em;
+        }
 
-    /* Layout */
-    html, body { margin: 3px; padding: 0; }
-    #leftcol, #rightcol { width: 49%; height: 100%; }
-    #leftcol { float: left; }
-    #rightcol { float: right; }
+        /* Layout */
+        html, body {
+            margin: 3px;
+            padding: 0;
+        }
 
-    h1, h2, h3 {
-    padding: 0.2em;
-    }
+        #leftcol, #rightcol {
+            width: 49%;
+            height: 100%;
+        }
 
-    h1 {
-    font-size: 1.4em;
-    }
+        #leftcol {
+            float: left;
+        }
 
-    h2 {
-    font-size: 1.2em;
-    }
+        #rightcol {
+            float: right;
+        }
 
-    h3 {
-    font-size: 1.0em;
-    }
+        h1, h2, h3 {
+            padding: 0.2em;
+        }
 
-    a {
-    color: #5c7a1f;
-    }
+        h1 {
+            font-size: 1.4em;
+        }
 
-    #leftcol p, #rightcol p { margin-left: 1em; }
+        h2 {
+            font-size: 1.2em;
+        }
 
-    div.code {
-        font-family: monospace;
-    }
+        h3 {
+            font-size: 1.0em;
+        }
 
-    div.tiny {
-        font-size: 0.65em;
-    }
+        a {
+            color: #5c7a1f;
+        }
 
-    div.small {
-        font-size: 0.8em;
-    }
+        #leftcol p, #rightcol p {
+            margin-left: 1em;
+        }
 
-    table {
-    border: solid 1px #5c7a1f;
-    }
+        div.code {
+            font-family: monospace;
+        }
 
-    thead {
-    background-color: #5c7a1f;
-    font-weight: bold;
-    color: white;
-    }
+        div.tiny {
+            font-size: 0.65em;
+        }
 
-    tbody tr:nth-child(even) {
-    background-color: #cce699;
-    }
+        div.small {
+            font-size: 0.8em;
+        }
 
-    tbody tr:nth-child(odd) {
-    background-color: #e0f0c2;
-    }
+        table {
+            border: solid 1px #5c7a1f;
+        }
 
-    th, td {
-        padding: 0.2em;
-        white-space: pre-wrap;
-        min-width: 5em;
-    }
+        thead {
+            background-color: #5c7a1f;
+            font-weight: bold;
+            color: white;
+        }
 
-    td.wide {
-        min-width: 10em;
-    }
+        tbody tr:nth-child(even) {
+            background-color: #cce699;
+        }
 
-    td.xwide {
-        min-width: 20em;
-    }
+        tbody tr:nth-child(odd) {
+            background-color: #e0f0c2;
+        }
 
-    span.warn {
-    display: block;
-    color: crimson;
-    }
+        th, td {
+            padding: 0.2em;
+            white-space: pre-wrap;
+            min-width: 5em;
+        }
 
-    td.enhanced {
-    font-weight: bold;
-    color: green;
-    }
+        td.wide {
+            min-width: 10em;
+        }
 
-    div.banner {
-    width: 112px;
-    height: 60px;
-    border: solid 2px black;
-    border-radius: 10px;
-    float: right;
-    text-align: center;
-    padding: 4px;
-    background-color: #e0f0c2;
-    }
+        td.xwide {
+            min-width: 20em;
+        }
 
-    div.banner span {
-    font-weight: bold;
-    display: block;
-    }
+        span.warn {
+            display: block;
+            color: crimson;
+        }
 
-    div.radio {
-    margin-left: 2em;
-    }
+        td.enhanced {
+            font-weight: bold;
+            color: green;
+        }
 
-    div.radio label, div.radio input {
-    display: inline;
-    }
+        div.banner {
+            width: 112px;
+            height: 60px;
+            border: solid 2px black;
+            border-radius: 10px;
+            float: right;
+            text-align: center;
+            padding: 4px;
+            background-color: #e0f0c2;
+        }
 
-    span.string {
-    color: darkgreen;
-    }
+        div.banner span {
+            font-weight: bold;
+            display: block;
+        }
 
-    p.label {
-    font-style: italic;
-    }
+        div.radio {
+            margin-left: 2em;
+        }
 
-    p.answer {
-    text-indent: 3em;
-    }
+        div.radio label, div.radio input {
+            display: inline;
+        }
 
-    div.white {
-    background-color: white;
-    }
+        span.string {
+            color: darkgreen;
+        }
 
-    div.red {
-    background-color: #cd0a0a;
-    }
+        p.label {
+            font-style: italic;
+        }
 
-    div.blue {
-    background-color: cadetblue;
-    }
+        p.answer {
+            text-indent: 3em;
+        }
+
+        div.white {
+            background-color: white;
+        }
+
+        div.red {
+            background-color: #cd0a0a;
+        }
+
+        div.blue {
+            background-color: cadetblue;
+        }
     </style>
 </head>
 
@@ -146,13 +161,13 @@
 <h1 th:utext="${searched}"></h1>
 <table>
     <tbody>
-    <div  th:each="movie: ${movies}">
-    <tr>
-        <td class="xwide" th:utext="${movie.getTitleBoxString()}"></td>
-        <td class="wide" th:utext="${movie.getDirectorLinkString()}"></td>
-        <td class="wide" th:utext="${movie.getActorLinkString()}"></td>
-        <td th:text="${movie.getDescription()}"></td>
-    </tr>
+    <div th:each="movie: ${movies}">
+        <tr>
+            <td class="xwide" th:utext="${movie.getTitleBoxString()}"></td>
+            <td class="wide" th:utext="${movie.getDirectorLinkString()}"></td>
+            <td class="wide" th:utext="${movie.getActorLinkString()}"></td>
+            <td th:text="${movie.getDescription()}"></td>
+        </tr>
     </div>
     </tbody>
 </table>
