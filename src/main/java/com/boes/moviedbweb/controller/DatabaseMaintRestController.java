@@ -59,15 +59,6 @@ public class DatabaseMaintRestController {
         movieRepository.save(movie);
     }
 
-    @PutMapping(path = "/rest/viewdate")
-    public void updateViewDate(@Valid @RequestBody MovieDto movieDto) {
-        Movie movie = getMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
-        movie.addDate(getViewDateDBInstances(movieDto.getViewDate()));
-        log.info("Added viewDate of " + movieDto.getViewDate() + " to "
-                + movie.getDisplayName());
-        movieRepository.save(movie);
-    }
-
     @PutMapping(path = "/rest/addcountryonexisting")
     public void addCountryOnExistingMovie(@Valid @RequestBody MovieDto movieDto) {
         Movie movie = getMovieByTitleAndYear(movieDto.getTitle(), movieDto.getYear());
@@ -77,21 +68,17 @@ public class DatabaseMaintRestController {
         movieRepository.save(movie);
     }
 
-    @PutMapping("/rest/addviewdate")
-    public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id,
-                                          @RequestParam(value = "date", required = true) String date) {
-        Movie movie = getMovieById(id);
-        movie.addDate(getViewDateDBInstances(date));
-        log.info("Added viewDate of " + date + " to " + movie.getDisplayName());
-        movieRepository.save(movie);
-    }
-
-    @PutMapping("/rest/viewedagaintoday")
-    public void updateViewDateWithMovieId(@RequestParam(value = "id", required = true) long id) {
-        Movie movie = getMovieById(id);
-        movie.addDate(getViewDateDBInstances(LocalDate.now()));
-        log.info("Added viewDate of today to " + movie.getDisplayName());
-        movieRepository.save(movie);
+    @PutMapping("/rest/viewedtoday")
+    public void addViewDateOfToday(@RequestParam(value = "titleAndDate", required = true) String titleAndDate) {
+        Title title = new Title(titleAndDate.trim());
+        if (movieRepository.existsByTitleAndYear(title.getName(), title.getYear())) {
+            Movie movie = getMovieByTitleAndYear(title.getName(), title.getYear());
+            movie.addDate(getViewDateDBInstances(LocalDate.now()));
+            log.info("Added viewDate of today to " + movie.getDisplayName());
+            movieRepository.save(movie);
+        } else {
+            log.info(titleAndDate.trim() + " was not found!");
+        }
     }
 
     @PutMapping("/rest/createamoviefromtext")
