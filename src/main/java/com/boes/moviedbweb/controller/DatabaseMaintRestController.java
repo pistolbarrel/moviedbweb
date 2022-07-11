@@ -69,15 +69,15 @@ public class DatabaseMaintRestController {
     }
 
     @PutMapping("/rest/viewedtoday")
-    public void addViewDateOfToday(@RequestParam(value = "titleAndDate", required = true) String titleAndDate) {
-        Title title = new Title(titleAndDate.trim());
+    public void addViewDateOfToday(@RequestBody MovieCollectionDto movieCollectionDto) {
+        Title title = new Title(movieCollectionDto.getTitles().trim());
         if (movieRepository.existsByTitleAndYear(title.getName(), title.getYear())) {
             Movie movie = getMovieByTitleAndYear(title.getName(), title.getYear());
             movie.addDate(getViewDateDBInstances(LocalDate.now()));
             log.info("Added viewDate of today to " + movie.getDisplayName());
             movieRepository.save(movie);
         } else {
-            log.info(titleAndDate.trim() + " was not found!");
+            log.info(movieCollectionDto.getTitles().trim() + " was not found!");
         }
     }
 
