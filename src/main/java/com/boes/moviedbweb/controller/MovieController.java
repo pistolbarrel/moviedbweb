@@ -11,6 +11,7 @@ import com.boes.moviedbweb.utils.MovieHtmlHelper;
 import com.boes.moviedbweb.utils.MovieUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 public class MovieController {
 
@@ -66,15 +68,13 @@ public class MovieController {
     public List<Director> getAllDirectors(Model model) {
         List<Director> directors = directorService.getAll();
         // This loop sets the count of movies. If the count is zero,
-        // it removes the entry from the list. This is covering up
-        // that I'm not keeping my database 'tidy'. SO, tidy up as we go.
+        // log it for possible deletion.
         Iterator<Director> itr = directors.iterator();
         while (itr.hasNext()) {
             Director director = itr.next();
             director.setCount(directorService.getMovieCountById(director.getDirectorId()));
             if (director.getCount() == 0) {
-                directorService.deleteDirector(director);
-                itr.remove();
+                log.warn("No movies found with Director: " + director);
             }
         }
         model.addAttribute("searched",
@@ -88,15 +88,13 @@ public class MovieController {
     public List<Actor> getAllActors(Model model) {
         List<Actor> actors = actorService.getAll();
         // This loop sets the count of movies. If the count is zero,
-        // it removes the entry from the list. This is covering up
-        // that I'm not keeping my database 'tidy'.
+        // log it for possible deletion.
         Iterator<Actor> itr = actors.iterator();
         while (itr.hasNext()) {
             Actor actor = itr.next();
             actor.setCount(actorService.getMovieCountById(actor.getActorId()));
             if (actor.getCount() == 0) {
-                actorService.deleteActor(actor);
-                itr.remove();
+                log.warn("No movies found with Actor: " + actor);
             }
         }
         model.addAttribute("searched",
@@ -110,15 +108,13 @@ public class MovieController {
     public List<Collection> getAllCollections(Model model) {
         List<Collection> collections = collectionService.getAll();
         // This loop sets the count of movies. If the count is zero,
-        // it removes the entry from the list. This is covering up
-        // that I'm not keeping my database 'tidy'.
+        // log it for possible deletion.
         Iterator<Collection> itr = collections.iterator();
         while (itr.hasNext()) {
             Collection collection = itr.next();
             collection.setCount(collectionService.getMovieCountById(collection.getCollectionId()));
             if (collection.getCount() == 0) {
-                collectionService.deleteCollection(collection);
-                itr.remove();
+                log.warn("No movies found with Collection: " + collection);
             }
         }
         model.addAttribute("searched",
@@ -132,15 +128,13 @@ public class MovieController {
     public List<Country> getAllCountries(Model model) {
         List<Country> countries = countryService.getAll();
         // This loop sets the count of movies. If the count is zero,
-        // it removes the entry from the list. This is covering up
-        // that I'm not keeping my database 'tidy'.
+        // log it for possible deletion.
         Iterator<Country> itr = countries.iterator();
         while (itr.hasNext()) {
             Country country = itr.next();
             country.setCount(countryService.getMovieCountById(country.getCountryId()));
             if (country.getCount() == 0) {
-                countryService.deleteCountry(country);
-                itr.remove();
+                log.warn("No movies found with Country: " + country);
             }
         }
         model.addAttribute("searched",
@@ -178,11 +172,6 @@ public class MovieController {
     @GetMapping("/director")
     public List<Movie> getByDirectorId(@Parameter(description = "id of the director to be searched")
                                        @RequestParam(value = "id", required = true) long id, Model model) {
-        return getMovies(id, model, movieRepository);
-    }
-
-    public List<Movie> getMovies(@RequestParam(value = "id", required = true) long id, Model model,
-                                 MovieRepository movieRepository) {
         List<Movie> movies = movieRepository.findByDirectorId(id);
         movies = filterOutUnseenMovies(movies);
         String searchedOn = movies.get(0).getDirectors().stream().
@@ -255,9 +244,18 @@ public class MovieController {
     }
 
     private List<Movie> filterOutUnseenMovies(List<Movie> movies) {
-        List<Movie> ret = movies.stream()
-                .filter(m -> m.getDateViewed().stream().count() != 0)
-                .collect(Collectors.toList());
-        return ret;
+        // If there is only 1 movie in the list, skip this since
+        // this may be an 'unseen' movie and if it's removed,
+        // that will cause a stack dump when trying to display it.
+        if (movies.stream().count() > 1) {
+            List<Movie> collect = movies.stream()
+                    .filter(m -> m.getDateViewed().stream().count() != 0)
+                    .collect(Collectors.toList());
+            if (collect.stream().count() != 0)
+                return collect;
+            else
+                return movies;
+        }
+        return movies;
     }
 }

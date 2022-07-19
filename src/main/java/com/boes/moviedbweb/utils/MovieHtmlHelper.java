@@ -12,6 +12,7 @@ public final class MovieHtmlHelper {
     private static final String allCollectionsUrl = "/allcollections";
     private static final String allCountriesUrl = "/allcountries";
     private static final String viewedLast30DaysUrl = "/viewedinlast30days";
+    private static final String unseenMoviesUrl = "/unseenmovies";
 
     public static String getYearLinkString(String year) {
         if (year.isEmpty()) return year;
@@ -92,6 +93,10 @@ public final class MovieHtmlHelper {
         return linkGen(viewedLast30DaysUrl, " Viewed in last 30 days");
     }
 
+    private static String getUnseenMoviesUrlLink() {
+        return linkGen(unseenMoviesUrl, " Movies on watchlist");
+    }
+
     public static String getSearchedValue(String searchTerm, String numberOfResults) {
         StringBuilder sb = new StringBuilder("Current search:" + searchTerm + " (");
         sb.append(numberOfResults);
@@ -107,6 +112,8 @@ public final class MovieHtmlHelper {
         sb.append(getAllCountriesLink());
         sb.append("&nbsp&nbsp&nbsp&nbsp&nbsp");
         sb.append(getViewedLast30DaysUrlLink());
+        sb.append("&nbsp&nbsp&nbsp&nbsp&nbsp");
+        sb.append(getUnseenMoviesUrlLink());
         sb.append("</div>");
         return sb.toString();
     }
