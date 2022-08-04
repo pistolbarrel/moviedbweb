@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ActorService {
@@ -33,5 +35,14 @@ public class ActorService {
 
     public void deleteActor(Actor actor) {
         actorRepository.delete(actor);
+    }
+
+    public void deleteActorById(Long id) {
+        Optional<Actor> actor = actorRepository.findById(id);
+        if (actor.isPresent()) {
+            actorRepository.delete(actor.get());
+        } else {
+            throw new NoSuchElementException("Actor does not exist.");
+        }
     }
 }

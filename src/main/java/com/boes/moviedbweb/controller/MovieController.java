@@ -58,7 +58,8 @@ public class MovieController {
     @GetMapping("/unseenmovies")
     public List<Movie> getUnseenMovies(Model model) {
         List<Movie> movies = movieRepository.searchAllByDateViewedIsNull();
-        model.addAttribute("searched", "All Unseen Movies (" + movies.stream().count() + ")");
+        model.addAttribute("searched",
+                MovieHtmlHelper.getSearchedValue("All Unseen Movies", String.valueOf(movies.stream().count())));
         model.addAttribute("movies", movies);
         return movies;
     }
@@ -77,6 +78,7 @@ public class MovieController {
                 log.warn("No movies found with Director: " + director);
             }
         }
+        directors.removeIf(d -> d.getCount() == 0);
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Directors", String.valueOf(directors.stream().count())));
         model.addAttribute("entities", directors);
@@ -97,6 +99,7 @@ public class MovieController {
                 log.warn("No movies found with Actor: " + actor);
             }
         }
+        actors.removeIf(a -> a.getCount() == 0);
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Actors", String.valueOf(actors.stream().count())));
         model.addAttribute("entities", actors);
@@ -117,6 +120,7 @@ public class MovieController {
                 log.warn("No movies found with Collection: " + collection);
             }
         }
+        collections.removeIf(c -> c.getCount() == 0);
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Collections", String.valueOf(collections.stream().count())));
         model.addAttribute("entities", collections);
@@ -137,6 +141,7 @@ public class MovieController {
                 log.warn("No movies found with Country: " + country);
             }
         }
+        countries.removeIf(c -> c.getCount() == 0);
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Countries", String.valueOf(countries.stream().count())));
         model.addAttribute("entities", countries);

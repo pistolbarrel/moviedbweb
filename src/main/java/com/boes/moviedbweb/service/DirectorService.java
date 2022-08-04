@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class DirectorService {
@@ -33,5 +35,14 @@ public class DirectorService {
 
     public void deleteDirector(Director director) {
         directorRepository.delete(director);
+    }
+
+    public void deleteDirectorById(Long id) {
+        Optional<Director> director = directorRepository.findById(id);
+        if (director.isPresent()) {
+            directorRepository.delete(director.get());
+        } else {
+            throw new NoSuchElementException("Director does not exist.");
+        }
     }
 }

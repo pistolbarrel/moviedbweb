@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CountryService {
@@ -33,5 +35,14 @@ public class CountryService {
 
     public void deleteCountry(Country country) {
         countryRepository.delete(country);
+    }
+
+    public void deleteCountryById(Long id) {
+        Optional<Country> country = countryRepository.findById(id);
+        if (country.isPresent()) {
+            countryRepository.delete(country.get());
+        } else {
+            throw new NoSuchElementException("Country does not exist.");
+        }
     }
 }

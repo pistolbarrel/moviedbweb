@@ -130,7 +130,27 @@ public class DatabaseMaintRestController {
         log.info("Movies to watch this month:\n" + sb.toString());
     }
 
-    @PutMapping("/rest/deletemovie")
+    @PutMapping("/rest/deleteActor")
+    public void deleteActorById(@RequestParam(value = "id", required = true) long id) {
+        actorService.deleteActorById(id);
+    }
+
+    @PutMapping("/rest/deleteCollection")
+    public void deleteCollectionById(@RequestParam(value = "id", required = true) long id) {
+        collectionService.deleteCollectionById(id);
+    }
+
+    @PutMapping("/rest/deleteCountry")
+    public void deleteCountryById(@RequestParam(value = "id", required = true) long id) {
+        countryService.deleteCountryById(id);
+    }
+
+    @PutMapping("/rest/deleteDirector")
+    public void deleteDirectorById(@RequestParam(value = "id", required = true) long id) {
+        directorService.deleteDirectorById(id);
+    }
+
+    @PutMapping("/rest/deleteMovie")
     public void deleteMovieById(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
         log.info("Deleting movie = " + movie.getDisplayName());
