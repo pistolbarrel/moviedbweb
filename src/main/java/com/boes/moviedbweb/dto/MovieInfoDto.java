@@ -1,5 +1,6 @@
 package com.boes.moviedbweb.dto;
 
+import com.boes.moviedbweb.utils.MovieUtils;
 import com.boes.moviedbweb.utils.Title;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
@@ -53,11 +54,11 @@ public class MovieInfoDto {
         Title title = new Title(extractedStrings.get(TITLE_INDEX));
         MovieDto dto = new MovieDto(
                 title.getName(),
-                replaceNoneWithEmpty(title.getYear()),
-                replaceNoneWithEmpty(descriptionBuilder.toString()),
-                replaceNoneWithEmpty(extractedStrings.get(ACTORS_INDEX + parseAdjust)),
-                replaceNoneWithEmpty(extractedStrings.get(DIRECTORS_INDEX + parseAdjust)),
-                replaceNoneWithEmpty(
+                title.getYear(),
+                MovieUtils.replaceNoneWithEmpty(descriptionBuilder.toString()),
+                MovieUtils.replaceNoneWithEmpty(extractedStrings.get(ACTORS_INDEX + parseAdjust)),
+                MovieUtils.replaceNoneWithEmpty(extractedStrings.get(DIRECTORS_INDEX + parseAdjust)),
+                MovieUtils.replaceNoneWithEmpty(
                         extractedStrings.get(COUNTRIES_INDEX + parseAdjust).replace(",", ";")
                 ),
                 extractedStrings.get(COLLECTIONS_INDEX),
@@ -66,12 +67,8 @@ public class MovieInfoDto {
                 movieInfo.isAbsolute()
         );
         if (!StringUtils.isBlank(movieInfo.viewDate)) {
-            dto.setViewDate(replaceNoneWithEmpty(movieInfo.viewDate));
+            dto.setViewDate(MovieUtils.replaceNoneWithEmpty(movieInfo.viewDate));
         }
         return dto;
-    }
-
-    static String replaceNoneWithEmpty(String input) {
-        return input.equals("NONE") ? "" : input;
     }
 }

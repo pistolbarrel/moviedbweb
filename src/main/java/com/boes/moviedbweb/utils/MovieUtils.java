@@ -51,4 +51,9 @@ public class MovieUtils {
             return viewDates.stream().map(ViewDate::getLocalDate).max(LocalDate::compareTo).get().toString();
         return "never";
     }
+
+    public static String replaceNoneWithEmpty(String input) {
+        return input.equals("NONE") ? "" : input;
+    }
+
 }

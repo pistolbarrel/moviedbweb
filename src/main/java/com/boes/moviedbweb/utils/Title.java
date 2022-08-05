@@ -12,7 +12,9 @@ public class Title {
     private String year;
 
     public Title(String titleAndYear) {
-        year = titleAndYear.substring(titleAndYear.indexOf('(') + 1, titleAndYear.indexOf(')'));
+        year = MovieUtils.replaceNoneWithEmpty(
+                titleAndYear.substring(titleAndYear.indexOf('(') + 1, titleAndYear.indexOf(')'))
+        );
         name = titleAndYear.substring(0, titleAndYear.indexOf('(') - 1);
     }
 
