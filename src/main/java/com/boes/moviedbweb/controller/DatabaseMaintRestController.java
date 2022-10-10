@@ -177,11 +177,11 @@ public class DatabaseMaintRestController {
         }
         // Only (over)write duration and description if it has no value or absolute is true
         if (!StringUtils.isBlank(movieDto.getDuration())
-                && (movie.getDuration().toString().isEmpty() || (movieDto.isAbsolute()))) {
+                && (movie.getDuration() == null || (movieDto.isAbsolute()))) {
             movie.setDuration(MovieUtils.convertHHMMSSToInteger(movieDto.getDuration()));
         }
         if (!StringUtils.isBlank(movieDto.getDescription())
-                && (movie.getDescription().isEmpty() || (movieDto.isAbsolute()))) {
+                && (movie.getDescription() == null || (movieDto.isAbsolute()))) {
             movie.setDescription(movieDto.getDescription());
         }
         if (!StringUtils.isBlank(movieDto.getActors())) {
