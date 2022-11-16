@@ -48,7 +48,6 @@ public class MovieController {
     @GetMapping("/movies")
     public List<Movie> getAllMovies(Model model) {
         List<Movie> movies = movieRepository.findAllByOrderByTitleAsc();
-        movies = filterOutUnseenMovies(movies);
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Movies", String.valueOf(movies.stream().count())));
         model.addAttribute("movies", movies);
@@ -178,7 +177,6 @@ public class MovieController {
     public List<Movie> getByDirectorId(@Parameter(description = "id of the director to be searched")
                                        @RequestParam(value = "id", required = true) long id, Model model) {
         List<Movie> movies = movieRepository.findByDirectorId(id);
-        movies = filterOutUnseenMovies(movies);
         String searchedOn = movies.get(0).getDirectors().stream().
                 filter(a -> a.getDirectorId() == id)
                 .map(Director::getName)
@@ -193,7 +191,6 @@ public class MovieController {
     public List<Movie> getByActorId(@Parameter(description = "id of the actor to be searched")
                                     @RequestParam(value = "id", required = true) long id, Model model) {
         List<Movie> movies = movieRepository.findByActorId(id);
-        movies = filterOutUnseenMovies(movies);
         String searchedOn = movies.get(0).getActors().stream().
                 filter(a -> a.getActorId() == id)
                 .map(Actor::getName)
@@ -207,7 +204,6 @@ public class MovieController {
     public List<Movie> getBySeriesId(@Parameter(description = "id of the collection to be searched")
                                      @RequestParam(value = "id", required = true) long id, Model model) {
         List<Movie> movies = movieRepository.findByCollectionId(id);
-        movies = filterOutUnseenMovies(movies);
         String searchedOn = movies.get(0).getCollections().stream().
                 filter(a -> a.getCollectionId() == id)
                 .map(Collection::getName)
@@ -221,7 +217,6 @@ public class MovieController {
     public List<Movie> getByYear(@Parameter(description = "the four digit year to be searched")
                                  @RequestParam(value = "id", required = true) String id, Model model) {
         List<Movie> movies = movieRepository.findByYearOrderByTitle(id);
-        movies = filterOutUnseenMovies(movies);
         updateModel(id, model, movies, id);
         return movies;
     }
@@ -232,7 +227,6 @@ public class MovieController {
                                       @RequestParam(value = "id", required = true) String id, Model model) {
         long localId = Long.parseLong(id);
         List<Movie> movies = movieRepository.findByCountryIdOOrderByTitle(localId);
-        movies = filterOutUnseenMovies(movies);
         String searchedOn = movies.get(0).getCountries().stream().
                 filter(a -> a.getCountryId() == localId)
                 .map(Country::getName)

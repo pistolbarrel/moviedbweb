@@ -143,6 +143,12 @@ public class Movie {
         return MovieHtmlHelper.getYearLinkString(year);
     }
 
-    public String getDisplayDuration() { return MovieUtils.getDisplayDuration(duration); }
+    public String getDisplayDuration() {
+        return MovieUtils.getDisplayDuration(duration);
+    }
+
+    public String isSeen() {
+        return dateViewed != null && !dateViewed.isEmpty() ? "seen" : "unseen";
+    }
 }
 
