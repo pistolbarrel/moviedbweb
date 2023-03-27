@@ -32,5 +32,6 @@ public class MovieDto {
     // used in update mode to delete all prior linked data including
     // actors, directors, countries, and collections.
     // viewDates ARE LEFT INTACT.
+    @Builder.Default
     private boolean absolute = false;
 }

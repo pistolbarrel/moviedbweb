@@ -61,7 +61,7 @@ public class MovieInfoDto {
                 MovieUtils.replaceNoneWithEmpty(
                         extractedStrings.get(COUNTRIES_INDEX + parseAdjust).replace(",", ";")
                 ),
-                extractedStrings.get(COLLECTIONS_INDEX),
+                MovieUtils.replaceNoneWithEmpty(extractedStrings.get(COLLECTIONS_INDEX)),
                 LocalDate.now().toString(),
                 extractedStrings.get(DURATION_INDEX),
                 movieInfo.isAbsolute()
