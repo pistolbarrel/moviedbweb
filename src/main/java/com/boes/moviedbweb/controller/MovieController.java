@@ -48,8 +48,10 @@ public class MovieController {
     @GetMapping("/movies")
     public List<Movie> getAllMovies(Model model) {
         List<Movie> movies = movieRepository.findAllByOrderByTitleAsc();
+        long seen = numberSeen(movies);
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("All Movies", String.valueOf(movies.stream().count())));
+                MovieHtmlHelper.getSearchedValue("All Movies",
+                        createSeenUnseenString(movies.stream().count(), seen)));
         model.addAttribute("movies", movies);
         return movies;
     }
@@ -236,25 +238,30 @@ public class MovieController {
     }
 
     private void updateModel(String id, Model model, List<Movie> movies, String searchedOn) {
+        long seen = numberSeen(movies);
+        String seenUnseen = createSeenUnseenString(movies.stream().count(), seen);
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue(searchedOn, String.valueOf(movies.stream().count())));
+                MovieHtmlHelper.getSearchedValue(searchedOn, seenUnseen));
         model.addAttribute("movies", movies);
         model.addAttribute("filterdBy", id);
     }
 
-    private List<Movie> filterOutUnseenMovies(List<Movie> movies) {
-        // If there is only 1 movie in the list, skip this since
-        // this may be an 'unseen' movie and if it's removed,
-        // that will cause a stack dump when trying to display it.
-        if (movies.stream().count() > 1) {
-            List<Movie> collect = movies.stream()
-                    .filter(m -> m.getDateViewed().stream().count() != 0)
-                    .collect(Collectors.toList());
-            if (collect.stream().count() != 0)
-                return collect;
-            else
-                return movies;
-        }
-        return movies;
+    private long numberSeen(List<Movie> movies) {
+        return movies.stream()
+                .filter(m -> m.getDateViewed().stream().count() != 0)
+                .count();
+    }
+
+    private String createSeenUnseenString(long total, long seen) {
+        String ret = new String();
+
+        if (total == seen)
+            ret = String.valueOf(total);
+        else if (seen == 0)
+            ret = "0," + String.valueOf(total);
+        else
+            ret = String.valueOf(seen) + "/" + String.valueOf(total) + " - " + String.valueOf(total - seen);
+
+        return ret;
     }
 }

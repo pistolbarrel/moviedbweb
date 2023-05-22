@@ -116,6 +116,7 @@ public class DatabaseMaintRestController {
         for (String titleString : titlesWithYears) {
             Title title = new Title(titleString.trim());
             if (!movieRepository.existsByTitleAndYear(title.getName(), title.getYear())) {
+                sb.append("Not Watchlisted:" + title.getDisplayName() + "\n");
                 continue;
             }
             Movie movie = getMovieByTitleAndYear(title.getName(), title.getYear());
@@ -130,27 +131,34 @@ public class DatabaseMaintRestController {
         log.info("Movies to watch this month:\n" + sb.toString());
     }
 
-    @PutMapping("/rest/deleteActor")
+    @DeleteMapping("/rest/deleteActor")
     public void deleteActorById(@RequestParam(value = "id", required = true) long id) {
         actorService.deleteActorById(id);
     }
 
-    @PutMapping("/rest/deleteCollection")
+    @DeleteMapping("/rest/deleteCollection")
     public void deleteCollectionById(@RequestParam(value = "id", required = true) long id) {
         collectionService.deleteCollectionById(id);
     }
 
-    @PutMapping("/rest/deleteCountry")
+    @PatchMapping("/rest/renameCollection")
+    public void renameCollectionById(@RequestParam(value = "id", required = true) long id,
+                                     @RequestParam(value = "name", required = true) String name) {
+        // any rules for a name? how about it can't be null or empty.
+        collectionService.renameCollectionById(id, name);
+    }
+
+    @DeleteMapping("/rest/deleteCountry")
     public void deleteCountryById(@RequestParam(value = "id", required = true) long id) {
         countryService.deleteCountryById(id);
     }
 
-    @PutMapping("/rest/deleteDirector")
+    @DeleteMapping("/rest/deleteDirector")
     public void deleteDirectorById(@RequestParam(value = "id", required = true) long id) {
         directorService.deleteDirectorById(id);
     }
 
-    @PutMapping("/rest/deleteMovie")
+    @DeleteMapping("/rest/deleteMovie")
     public void deleteMovieById(@RequestParam(value = "id", required = true) long id) {
         Movie movie = getMovieById(id);
         log.info("Deleting movie = " + movie.getDisplayName());

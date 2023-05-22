@@ -46,4 +46,14 @@ public class CollectionService {
             throw new NoSuchElementException("Series does not exist.");
         }
     }
+
+    public void renameCollectionById(long id, String name) {
+        Optional<Collection> collection = collectionRepository.findById(id);
+        if (collection.isPresent()) {
+            collection.get().setName(name);
+            collectionRepository.save(collection.get());
+        } else {
+            throw new NoSuchElementException("Series does not exist.");
+        }
+    }
 }
