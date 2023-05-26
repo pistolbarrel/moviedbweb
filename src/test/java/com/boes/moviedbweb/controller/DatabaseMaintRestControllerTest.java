@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DatabaseMaintRestControllerTest {
 
     @Autowired
-    DatabaseMaintRestController controller;
+    MovieController controller;
 
     @Test
     void createMovie() {

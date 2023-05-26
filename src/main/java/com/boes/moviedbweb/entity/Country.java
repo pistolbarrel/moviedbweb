@@ -21,7 +21,7 @@ public class Country {
     private String name;
 
     @Transient
-    private Long count = 0L;
+    private Long count;
 
     public String getLinkString() {
         return MovieHtmlHelper.getCountyLinkString(this);

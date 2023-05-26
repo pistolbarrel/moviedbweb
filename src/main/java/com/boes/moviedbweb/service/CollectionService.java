@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CollectionService {
@@ -38,22 +37,19 @@ public class CollectionService {
         collectionRepository.delete(collection);
     }
 
-    public void deleteCollectionById(Long id) {
-        Optional<Collection> collection = collectionRepository.findById(id);
-        if (collection.isPresent()) {
-            collectionRepository.delete(collection.get());
-        } else {
-            throw new NoSuchElementException("Series does not exist.");
-        }
+    public Collection getCollection(Long id) {
+        return collectionRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Series does not exist."));
     }
 
-    public void renameCollectionById(long id, String name) {
-        Optional<Collection> collection = collectionRepository.findById(id);
-        if (collection.isPresent()) {
-            collection.get().setName(name);
-            collectionRepository.save(collection.get());
-        } else {
-            throw new NoSuchElementException("Series does not exist.");
-        }
+    public void deleteCollection(Long id) {
+        Collection collection = getCollection(id);
+        collectionRepository.delete(collection);
+    }
+
+    public void renameCollection(long id, String name) {
+        Collection collection = getCollection(id);
+        collection.setName(name);
+        collectionRepository.save(collection);
     }
 }

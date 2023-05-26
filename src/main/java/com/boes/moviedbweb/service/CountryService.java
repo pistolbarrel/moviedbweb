@@ -7,12 +7,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CountryService {
 
-    private CountryRepository countryRepository;
+    private final CountryRepository countryRepository;
 
     @Autowired
     public CountryService(CountryRepository countryRepository) {
@@ -20,9 +19,8 @@ public class CountryService {
     }
 
     public Country getOrCreateCountry(String name) {
-        Country country = countryRepository.findByName(name)
+        return countryRepository.findByName(name)
                 .orElseGet(() -> countryRepository.save(Country.builder().name(name).build()));
-        return country;
     }
 
     public List<Country> getAll() {
@@ -33,16 +31,20 @@ public class CountryService {
         return countryRepository.getCountOfMoviesById(id);
     }
 
-    public void deleteCountry(Country country) {
+
+    public Country getCountry(Long id) {
+        return countryRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Series does not exist."));
+    }
+
+    public void deleteCountry(Long id) {
+        Country country = getCountry(id);
         countryRepository.delete(country);
     }
 
-    public void deleteCountryById(Long id) {
-        Optional<Country> country = countryRepository.findById(id);
-        if (country.isPresent()) {
-            countryRepository.delete(country.get());
-        } else {
-            throw new NoSuchElementException("Country does not exist.");
-        }
+    public void renameCountry(long id, String name) {
+        Country country = getCountry(id);
+        country.setName(name);
+        countryRepository.save(country);
     }
 }

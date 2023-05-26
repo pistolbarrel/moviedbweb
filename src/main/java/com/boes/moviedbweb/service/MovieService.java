@@ -1,14 +1,16 @@
 package com.boes.moviedbweb.service;
 
 import com.boes.moviedbweb.entity.*;
-import com.boes.moviedbweb.entity.Collection;
 import com.boes.moviedbweb.repo.CountryRepository;
 import com.boes.moviedbweb.repo.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 public class MovieService {
@@ -112,7 +114,7 @@ public class MovieService {
         movieRepository.save(movie);
     }
 
-    public Iterable<Movie> lookup(){
+    public Iterable<Movie> lookup() {
         return movieRepository.findAll();
     }
 
@@ -120,4 +122,20 @@ public class MovieService {
         return movieRepository.findAll();
     }
 
+    public Movie getMovie(Long id) {
+        return movieRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Series does not exist."));
+    }
+
+    public String deleteMovie(Long id) {
+        Movie movie = getMovie(id);
+        String title = movie.getDisplayName();
+        Movie.removeAllJoinedDataExceptDates(movie);
+        // for a delete, even the dates must go.
+        if (movie.getDateViewed() != null) {
+            movie.getDateViewed().clear();
+        }
+        movieRepository.delete(movie);
+        return title;
+    }
 }

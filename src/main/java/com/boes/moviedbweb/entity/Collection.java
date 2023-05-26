@@ -21,7 +21,7 @@ public class Collection {
     private String name;
 
     @Transient
-    private Long count = 0L;
+    private Long count;
 
     public String getLinkString() {
         return MovieHtmlHelper.getCollectionLinkString(this);

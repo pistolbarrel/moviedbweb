@@ -7,12 +7,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class DirectorService {
 
-    private DirectorRepository directorRepository;
+    private final DirectorRepository directorRepository;
 
     @Autowired
     public DirectorService(DirectorRepository directorRepository) {
@@ -20,9 +19,8 @@ public class DirectorService {
     }
 
     public Director getOrCreateDirector(String name) {
-        Director director = directorRepository.findByName(name)
+        return directorRepository.findByName(name)
                 .orElseGet(() -> directorRepository.save(Director.builder().name(name).build()));
-        return director;
     }
 
     public List<Director> getAll() {
@@ -33,16 +31,19 @@ public class DirectorService {
         return directorRepository.getCountOfMoviesById(id);
     }
 
-    public void deleteDirector(Director director) {
+    public Director getDirector(Long id) {
+        return directorRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Series does not exist."));
+    }
+
+    public void deleteDirector(Long id) {
+        Director director = getDirector(id);
         directorRepository.delete(director);
     }
 
-    public void deleteDirectorById(Long id) {
-        Optional<Director> director = directorRepository.findById(id);
-        if (director.isPresent()) {
-            directorRepository.delete(director.get());
-        } else {
-            throw new NoSuchElementException("Director does not exist.");
-        }
+    public void renameDirector(long id, String name) {
+        Director director = getDirector(id);
+        director.setName(name);
+        directorRepository.save(director);
     }
 }
