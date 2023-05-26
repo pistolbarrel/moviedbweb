@@ -21,20 +21,27 @@ public class CollectionController {
         this.collectionService = collectionService;
     }
 
+    @Operation(summary = "Create a single Collection")
+    @PostMapping("/rest/collections")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Collection createCollection(@RequestParam String name) {
+        return collectionService.getOrCreateCollection(name);
+    }
+
     @Operation(summary = "Single Collection")
-    @GetMapping("/rest/collection/{collection_id}")
+    @GetMapping("/rest/collections/{collection_id}")
     public Collection getCollectionById(@PathVariable(value = "collection_id") long id) {
         return collectionService.getCollection(id);
     }
 
     @Operation(summary = "Delete an existing Collection")
-    @DeleteMapping("/rest/collection/{collection_id}")
+    @DeleteMapping("/rest/collections/{collection_id}")
     public void deleteCollectionById(@PathVariable(value = "collection_id") long id) {
         collectionService.deleteCollection(id);
     }
 
     @Operation(summary = "Modify an existing Collection")
-    @PutMapping("/rest/collection/{collection_id}")
+    @PutMapping("/rest/collections/{collection_id}")
     public void renameCollectionById(@PathVariable(value = "collection_id") long id,
                                      @RequestParam(value = "changeTo") Collection changeTo) {
         collectionService.renameCollection(id, changeTo.getName());

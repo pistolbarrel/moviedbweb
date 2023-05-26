@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -233,22 +234,84 @@ public class MovieController {
     }
 
     @Operation(summary = "Single Movie")
-    @GetMapping("/rest/movie/{movie_id}")
+    @GetMapping("/rest/movies/{movie_id}")
     public Movie getMovieById(@PathVariable(value = "movie_id") long id) {
         return movieService.getMovie(id);
     }
 
     @Operation(summary = "Delete an existing Movie")
-    @DeleteMapping("/rest/movie/{movie_id}")
+    @DeleteMapping("/rest/movies/{movie_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMovieById(@PathVariable(value = "movie_id") long id) {
         String title = movieService.deleteMovie(id);
         log.info("Deleting movie = " + title);
     }
 
+    @Operation(summary = "Actors for an existing movie")
+    @GetMapping("/rest/movies/{movie_id}/actors/")
+    public Set<Actor> getActorsForMovie(@PathVariable(value = "movie_id") long id) {
+        Movie movie = movieService.getMovie(id);
+        return movie.getActors();
+    }
+
+    @Operation(summary = "Modify the actors for an existing movie")
+    @PatchMapping("/rest/movies/{movie_id}/actors/")
+    public void modifyActorsForMovie(@PathVariable(value = "movie_id") long id,
+                                     @RequestBody Set<Actor> actors) {
+        movieService.modifyActorsForMovie(id, actors);
+    }
+
+    @Operation(summary = "Collections for an existing movie")
+    @GetMapping("/rest/movies/{movie_id}/collections/")
+    public Set<Collection> getCollectionsForMovie(@PathVariable(value = "movie_id") long id) {
+        Movie movie = movieService.getMovie(id);
+        return movie.getCollections();
+    }
+
+    @Operation(summary = "Modify the collections for an existing movie")
+    @PatchMapping("/rest/movies/{movie_id}/collections/")
+    public void modifyCollectionsForMovie(@PathVariable(value = "movie_id") long id,
+                                          @RequestBody Set<Collection> collections) {
+        movieService.modifyCollectionsForMovie(id, collections);
+    }
+
+    @Operation(summary = "Countries for an existing movie")
+    @GetMapping("/rest/movies/{movie_id}/countries/")
+    public Set<Country> getCountriessForMovie(@PathVariable(value = "movie_id") long id) {
+        Movie movie = movieService.getMovie(id);
+        return movie.getCountries();
+    }
+
+    @Operation(summary = "Modify the countries for an existing movie")
+    @PatchMapping("/rest/movies/{movie_id}/countries/")
+    public void modifyCountriesForMovie(@PathVariable(value = "movie_id") long id,
+                                        @RequestBody Set<Country> countries) {
+        movieService.modifyCountriesForMovie(id, countries);
+    }
+
+    @Operation(summary = "Directors for an existing movie")
+    @GetMapping("/rest/movies/{movie_id}/directors/")
+    public Set<Director> getDirectorsForMovie(@PathVariable(value = "movie_id") long id) {
+        Movie movie = movieService.getMovie(id);
+        return movie.getDirectors();
+    }
+
+    @Operation(summary = "Modify the directors for an existing movie")
+    @PatchMapping("/rest/movies/{movie_id}/directors/")
+    public void modifyDirectorsForMovie(@PathVariable(value = "movie_id") long id,
+                                        @RequestBody Set<Director> directors) {
+        movieService.modifyDirectorsForMovie(id, directors);
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public String return400(NoSuchElementException ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String return400(EntityNotFoundException ex) {
         return ex.getMessage();
     }
 }

@@ -138,4 +138,28 @@ public class MovieService {
         movieRepository.delete(movie);
         return title;
     }
+
+    public void modifyActorsForMovie(long id, Set<Actor> actors) {
+        Movie movie = getMovie(id);
+        movie.setActors(actors);
+        movieRepository.save(movie);
+    }
+
+    public void modifyDirectorsForMovie(long id, Set<Director> directors) {
+        Movie movie = getMovie(id);
+        movie.setDirectors(directors);
+        movieRepository.save(movie);
+    }
+
+    public void modifyCountriesForMovie(long id, Set<Country> countries) {
+        Movie movie = getMovie(id);
+        movie.setCountries(countries);
+        movieRepository.save(movie);
+    }
+
+    public void modifyCollectionsForMovie(long id, Set<Collection> collections) {
+        Movie movie = getMovie(id);
+        movie.setCollections(collections);
+        movieRepository.save(movie);
+    }
 }

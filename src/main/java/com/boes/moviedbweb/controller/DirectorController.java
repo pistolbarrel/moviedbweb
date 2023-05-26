@@ -21,20 +21,27 @@ public class DirectorController {
         this.directorService = directorService;
     }
 
+    @Operation(summary = "Create a single Director")
+    @PostMapping("/rest/directors")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Director createDirector(@RequestParam String name) {
+        return directorService.getOrCreateDirector(name);
+    }
+
     @Operation(summary = "Single Director")
-    @GetMapping("/rest/director/{director_id}")
+    @GetMapping("/rest/directors/{director_id}")
     public Director getDirectorById(@PathVariable(value = "director_id") long id) {
         return directorService.getDirector(id);
     }
 
     @Operation(summary = "Delete an existing Director")
-    @DeleteMapping("/rest/director/{director_id}")
+    @DeleteMapping("/rest/directors/{director_id}")
     public void deleteDirectorById(@PathVariable(value = "director_id") long id) {
         directorService.deleteDirector(id);
     }
 
     @Operation(summary = "Modify an existing Director")
-    @PutMapping("/rest/director/{director_id}")
+    @PutMapping("/rest/directors/{director_id}")
     public void renameDirectorById(@PathVariable(value = "director_id") long id,
                                    @RequestParam(value = "changeTo") Director changeTo) {
         directorService.renameDirector(id, changeTo.getName());

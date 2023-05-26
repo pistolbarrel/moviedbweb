@@ -21,20 +21,27 @@ public class CountryController {
         this.countryService = countryService;
     }
 
+    @Operation(summary = "Create a single Country")
+    @PostMapping("/rest/countries")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Country createCountry(@RequestParam String name) {
+        return countryService.getOrCreateCountry(name);
+    }
+
     @Operation(summary = "Single Country")
-    @GetMapping("/rest/country/{country_id}")
+    @GetMapping("/rest/countries/{country_id}")
     public Country getCountryById(@PathVariable(value = "country_id") long id) {
         return countryService.getCountry(id);
     }
 
     @Operation(summary = "Delete an existing Country")
-    @DeleteMapping("/rest/country/{country_id}")
+    @DeleteMapping("/rest/countries/{country_id}")
     public void deleteCountryById(@PathVariable(value = "country_id") long id) {
         countryService.deleteCountry(id);
     }
 
     @Operation(summary = "Modify an existing Country")
-    @PutMapping("/rest/country/{country_id}")
+    @PutMapping("/rest/countries/{country_id}")
     public void renameCountryById(@PathVariable(value = "country_id") long id,
                                   @RequestParam(value = "changeTo") Country changeTo) {
         countryService.renameCountry(id, changeTo.getName());

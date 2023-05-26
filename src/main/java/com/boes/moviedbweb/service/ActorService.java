@@ -19,8 +19,8 @@ public class ActorService {
     }
 
     public Actor getOrCreateActor(String name) {
-        return actorRepository.findByName(name)
-                .orElseGet(() -> actorRepository.save(Actor.builder().name(name).build()));
+        return actorRepository.findByName(name).orElseGet(() ->
+                actorRepository.save(Actor.builder().name(name).build()));
     }
 
     public List<Actor> getAll() {
@@ -37,8 +37,7 @@ public class ActorService {
     }
 
     public void deleteActor(Long id) {
-        Actor actor = getActor(id);
-        actorRepository.delete(actor);
+        actorRepository.delete(getActor(id));
     }
 
     public void renameActor(long id, String name) {

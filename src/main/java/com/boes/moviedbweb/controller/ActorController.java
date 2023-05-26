@@ -21,20 +21,27 @@ public class ActorController {
         this.actorService = actorService;
     }
 
+    @Operation(summary = "Create a single Actor")
+    @PostMapping("/rest/actors")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Actor createActor(@RequestParam String name) {
+        return actorService.getOrCreateActor(name);
+    }
+
     @Operation(summary = "Single Actor")
-    @GetMapping("/rest/actor/{actor_id}")
+    @GetMapping("/rest/actors/{actor_id}")
     public Actor getActorById(@PathVariable(value = "actor_id") long id) {
         return actorService.getActor(id);
     }
 
     @Operation(summary = "Delete an existing Actor")
-    @DeleteMapping("/rest/actor/{actor_id}")
+    @DeleteMapping("/rest/actors/{actor_id}")
     public void deleteActorById(@PathVariable(value = "actor_id") long id) {
         actorService.deleteActor(id);
     }
 
     @Operation(summary = "Modify an existing Actor")
-    @PutMapping("/rest/actor/{actor_id}")
+    @PutMapping("/rest/actors/{actor_id}")
     public void renameActorById(@PathVariable(value = "actor_id") long id,
                                 @RequestParam(value = "changeTo") Actor changeTo) {
         actorService.renameActor(id, changeTo.getName());
