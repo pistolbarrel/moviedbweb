@@ -33,7 +33,7 @@ public class DirectorService {
 
     public Director getDirector(Long id) {
         return directorRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Series does not exist."));
+                new NoSuchElementException("Director does not exist."));
     }
 
     public void deleteDirector(Long id) {

@@ -124,7 +124,7 @@ public class MovieService {
 
     public Movie getMovie(Long id) {
         return movieRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Series does not exist."));
+                new NoSuchElementException("Movie does not exist."));
     }
 
     public String deleteMovie(Long id) {

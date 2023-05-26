@@ -33,7 +33,7 @@ public class ActorService {
 
     public Actor getActor(Long id) {
         return actorRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Series does not exist."));
+                new NoSuchElementException("Actor does not exist."));
     }
 
     public void deleteActor(Long id) {

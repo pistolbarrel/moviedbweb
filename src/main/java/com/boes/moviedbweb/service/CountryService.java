@@ -34,7 +34,7 @@ public class CountryService {
 
     public Country getCountry(Long id) {
         return countryRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("Series does not exist."));
+                new NoSuchElementException("Country does not exist."));
     }
 
     public void deleteCountry(Long id) {
