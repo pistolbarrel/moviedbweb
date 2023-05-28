@@ -70,6 +70,7 @@ public class MovieController {
     }
 
     @PutMapping("/rest/viewedtoday")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addViewDateOfToday(@RequestBody MovieCollectionDto movieCollectionDto) {
         Title title = new Title(movieCollectionDto.getTitles().trim());
         if (movieRepository.existsByTitleAndYear(title.getName(), title.getYear())) {
@@ -79,6 +80,7 @@ public class MovieController {
             movieRepository.save(movie);
         } else {
             log.info(movieCollectionDto.getTitles().trim() + " was not found!");
+            throw new NoSuchElementException("Movie was not found");
         }
     }
 
