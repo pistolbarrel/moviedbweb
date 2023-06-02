@@ -25,13 +25,11 @@ import java.util.stream.Collectors;
 @Controller
 public class WebController {
 
-    private MovieRepository movieRepository;
-    private ActorService actorService;
-    private DirectorService directorService;
-    private CollectionService collectionService;
-    private CountryService countryService;
-
-    private MovieUtils movieUtils = new MovieUtils();
+    private final MovieRepository movieRepository;
+    private final ActorService actorService;
+    private final DirectorService directorService;
+    private final CollectionService collectionService;
+    private final CountryService countryService;
 
     @Autowired
     public WebController(MovieRepository movieRepository, ActorService actorService,
@@ -51,7 +49,7 @@ public class WebController {
         long seen = numberSeen(movies);
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue("All Movies",
-                        createSeenUnseenString(movies.stream().count(), seen)));
+                        createSeenUnseenString(movies.size(), seen)));
         model.addAttribute("movies", movies);
         return movies;
     }
@@ -60,7 +58,7 @@ public class WebController {
     public List<Movie> getUnseenMovies(Model model) {
         List<Movie> movies = movieRepository.searchAllByDateViewedIsNull();
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("All Unseen Movies", String.valueOf(movies.stream().count())));
+                MovieHtmlHelper.getSearchedValue("All Unseen Movies", String.valueOf((long) movies.size())));
         model.addAttribute("movies", movies);
         return movies;
     }
@@ -71,9 +69,7 @@ public class WebController {
         List<Director> directors = directorService.getAll();
         // This loop sets the count of movies. If the count is zero,
         // log it for possible deletion.
-        Iterator<Director> itr = directors.iterator();
-        while (itr.hasNext()) {
-            Director director = itr.next();
+        for (Director director : directors) {
             director.setCount(directorService.getMovieCountById(director.getDirectorId()));
             if (director.getCount() == 0) {
                 log.warn("No movies found with Director: " + director);
@@ -81,7 +77,7 @@ public class WebController {
         }
         directors.removeIf(d -> d.getCount() == 0);
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("All Directors", String.valueOf(directors.stream().count())));
+                MovieHtmlHelper.getSearchedValue("All Directors", String.valueOf((long) directors.size())));
         model.addAttribute("entities", directors);
         return directors;
     }
@@ -92,9 +88,7 @@ public class WebController {
         List<Actor> actors = actorService.getAll();
         // This loop sets the count of movies. If the count is zero,
         // log it for possible deletion.
-        Iterator<Actor> itr = actors.iterator();
-        while (itr.hasNext()) {
-            Actor actor = itr.next();
+        for (Actor actor : actors) {
             actor.setCount(actorService.getMovieCountById(actor.getActorId()));
             if (actor.getCount() == 0) {
                 log.warn("No movies found with Actor: " + actor);
@@ -102,7 +96,7 @@ public class WebController {
         }
         actors.removeIf(a -> a.getCount() == 0);
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("All Actors", String.valueOf(actors.stream().count())));
+                MovieHtmlHelper.getSearchedValue("All Actors", String.valueOf((long) actors.size())));
         model.addAttribute("entities", actors);
         return actors;
     }
@@ -113,9 +107,7 @@ public class WebController {
         List<Collection> collections = collectionService.getAll();
         // This loop sets the count of movies. If the count is zero,
         // log it for possible deletion.
-        Iterator<Collection> itr = collections.iterator();
-        while (itr.hasNext()) {
-            Collection collection = itr.next();
+        for (Collection collection : collections) {
             collection.setCount(collectionService.getMovieCountById(collection.getCollectionId()));
             if (collection.getCount() == 0) {
                 log.warn("No movies found with Collection: " + collection);
@@ -123,7 +115,7 @@ public class WebController {
         }
         collections.removeIf(c -> c.getCount() == 0);
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("All Collections", String.valueOf(collections.stream().count())));
+                MovieHtmlHelper.getSearchedValue("All Collections", String.valueOf((long) collections.size())));
         model.addAttribute("entities", collections);
         return collections;
     }
@@ -134,9 +126,7 @@ public class WebController {
         List<Country> countries = countryService.getAll();
         // This loop sets the count of movies. If the count is zero,
         // log it for possible deletion.
-        Iterator<Country> itr = countries.iterator();
-        while (itr.hasNext()) {
-            Country country = itr.next();
+        for (Country country : countries) {
             country.setCount(countryService.getMovieCountById(country.getCountryId()));
             if (country.getCount() == 0) {
                 log.warn("No movies found with Country: " + country);
@@ -144,7 +134,7 @@ public class WebController {
         }
         countries.removeIf(c -> c.getCount() == 0);
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("All Countries", String.valueOf(countries.stream().count())));
+                MovieHtmlHelper.getSearchedValue("All Countries", String.valueOf((long) countries.size())));
         model.addAttribute("entities", countries);
         return countries;
     }
@@ -157,10 +147,11 @@ public class WebController {
             movie.setLastViewedDate(MovieUtils.getLastViewedDate(movie.getDateViewed()));
         }
         movies = movies.stream().distinct().collect(Collectors.toList());
-        Collections.sort(movies, Comparator.comparing(Movie::getLastViewedDate));
+        movies.sort(Comparator.comparing(Movie::getLastViewedDate));
         Collections.reverse(movies);
         model.addAttribute("searched",
-                MovieHtmlHelper.getSearchedValue("Movies Viewed in last 30 Days", String.valueOf(movies.stream().count())));
+                MovieHtmlHelper.getSearchedValue("Movies Viewed in last 30 Days",
+                        String.valueOf((long) movies.size())));
         model.addAttribute("movies", movies);
         return movies;
 
@@ -170,14 +161,14 @@ public class WebController {
     @Operation(summary = "Returns the movies by id.")
     @GetMapping("/movie")
     public List<Movie> getMovieById(@Parameter(description = "id of the movie to be searched")
-                                    @RequestParam(value = "id", required = true) long id, Model model) {
-        return Arrays.asList(movieRepository.getById(id));
+                                    @RequestParam(value = "id") long id) {
+        return List.of(movieRepository.getById(id));
     }
 
     @Operation(summary = "Returns the movies by the given director.")
     @GetMapping("/director")
     public List<Movie> getByDirectorId(@Parameter(description = "id of the director to be searched")
-                                       @RequestParam(value = "id", required = true) long id, Model model) {
+                                       @RequestParam(value = "id") long id, Model model) {
         List<Movie> movies = movieRepository.findByDirectorId(id);
         String searchedOn = movies.get(0).getDirectors().stream().
                 filter(a -> a.getDirectorId() == id)
@@ -191,7 +182,7 @@ public class WebController {
     @Operation(summary = "Returns the movies by the given actor.")
     @GetMapping("/actor")
     public List<Movie> getByActorId(@Parameter(description = "id of the actor to be searched")
-                                    @RequestParam(value = "id", required = true) long id, Model model) {
+                                    @RequestParam(value = "id") long id, Model model) {
         List<Movie> movies = movieRepository.findByActorId(id);
         String searchedOn = movies.get(0).getActors().stream().
                 filter(a -> a.getActorId() == id)
@@ -204,7 +195,7 @@ public class WebController {
     @Operation(summary = "Returns the movies in a given collection.")
     @GetMapping("/series") // aka Collections
     public List<Movie> getBySeriesId(@Parameter(description = "id of the collection to be searched")
-                                     @RequestParam(value = "id", required = true) long id, Model model) {
+                                     @RequestParam(value = "id") long id, Model model) {
         List<Movie> movies = movieRepository.findByCollectionId(id);
         String searchedOn = movies.get(0).getCollections().stream().
                 filter(a -> a.getCollectionId() == id)
@@ -217,7 +208,7 @@ public class WebController {
     @Operation(summary = "Returns the movies released in a specified year.")
     @GetMapping("/year")
     public List<Movie> getByYear(@Parameter(description = "the four digit year to be searched")
-                                 @RequestParam(value = "id", required = true) String id, Model model) {
+                                 @RequestParam(value = "id") String id, Model model) {
         List<Movie> movies = movieRepository.findByYearOrderByTitle(id);
         updateModel(id, model, movies, id);
         return movies;
@@ -226,7 +217,7 @@ public class WebController {
     @Operation(summary = "Returns the movies from a given country.")
     @GetMapping("/country")
     public List<Movie> getByCountryId(@Parameter(description = "id of the collection to be searched")
-                                      @RequestParam(value = "id", required = true) String id, Model model) {
+                                      @RequestParam(value = "id") String id, Model model) {
         long localId = Long.parseLong(id);
         List<Movie> movies = movieRepository.findByCountryIdOOrderByTitle(localId);
         String searchedOn = movies.get(0).getCountries().stream().
@@ -239,7 +230,7 @@ public class WebController {
 
     private void updateModel(String id, Model model, List<Movie> movies, String searchedOn) {
         long seen = numberSeen(movies);
-        String seenUnseen = createSeenUnseenString(movies.stream().count(), seen);
+        String seenUnseen = createSeenUnseenString(movies.size(), seen);
         model.addAttribute("searched",
                 MovieHtmlHelper.getSearchedValue(searchedOn, seenUnseen));
         model.addAttribute("movies", movies);
@@ -248,19 +239,19 @@ public class WebController {
 
     private long numberSeen(List<Movie> movies) {
         return movies.stream()
-                .filter(m -> m.getDateViewed().stream().count() != 0)
+                .filter(m -> (long) m.getDateViewed().size() != 0)
                 .count();
     }
 
     private String createSeenUnseenString(long total, long seen) {
-        String ret = new String();
+        String ret;
 
         if (total == seen)
             ret = String.valueOf(total);
         else if (seen == 0)
-            ret = "0," + String.valueOf(total);
+            ret = "0," + total;
         else
-            ret = String.valueOf(seen) + "/" + String.valueOf(total) + " - " + String.valueOf(total - seen);
+            ret = seen + "/" + total + " - " + (total - seen);
 
         return ret;
     }
