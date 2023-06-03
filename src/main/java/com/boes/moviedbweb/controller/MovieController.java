@@ -134,7 +134,7 @@ public class MovieController {
         log.info("Movies to watch this month:\n" + sb);
     }
 
-    @PutMapping(path = "/rest/movies")
+    @PutMapping(path = "/rest/movie")
     public void createMovie(@Valid @RequestBody MovieDto movieDto) {
         createOrUpdateMovieImpl(movieDto);
     }
