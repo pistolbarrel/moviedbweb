@@ -40,11 +40,11 @@ public class CountryController {
         countryService.deleteCountry(id);
     }
 
-    @Operation(summary = "Modify an existing Country")
+    @Operation(summary = "Modify an existing Country's name. Use the name field for new name.")
     @PutMapping("/rest/countries/{country_id}")
     public void renameCountryById(@PathVariable(value = "country_id") long id,
-                                  @RequestParam(value = "changeTo") Country changeTo) {
-        countryService.renameCountry(id, changeTo.getName());
+                                  @RequestParam(value = "name") String changeTo) {
+        countryService.renameCountry(id, changeTo);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

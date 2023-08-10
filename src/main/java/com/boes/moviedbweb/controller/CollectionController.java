@@ -40,11 +40,11 @@ public class CollectionController {
         collectionService.deleteCollection(id);
     }
 
-    @Operation(summary = "Modify an existing Collection")
+    @Operation(summary = "Modify an existing Collection's name. Use the name field for new name.")
     @PutMapping("/rest/collections/{collection_id}")
     public void renameCollectionById(@PathVariable(value = "collection_id") long id,
-                                     @RequestParam(value = "changeTo") Collection changeTo) {
-        collectionService.renameCollection(id, changeTo.getName());
+                                     @RequestParam(value = "name") String changeTo) {
+        collectionService.renameCollection(id, changeTo);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

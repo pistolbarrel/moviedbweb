@@ -40,11 +40,11 @@ public class DirectorController {
         directorService.deleteDirector(id);
     }
 
-    @Operation(summary = "Modify an existing Director")
+    @Operation(summary = "Modify an existing Director's name. Use the name field for new name.")
     @PutMapping("/rest/directors/{director_id}")
     public void renameDirectorById(@PathVariable(value = "director_id") long id,
-                                   @RequestParam(value = "changeTo") Director changeTo) {
-        directorService.renameDirector(id, changeTo.getName());
+                                   @RequestParam(value = "name") String changeTo) {
+        directorService.renameDirector(id, changeTo);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

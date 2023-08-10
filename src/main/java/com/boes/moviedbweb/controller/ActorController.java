@@ -40,11 +40,11 @@ public class ActorController {
         actorService.deleteActor(id);
     }
 
-    @Operation(summary = "Modify an existing Actor")
+    @Operation(summary = "Modify an existing Actor's name. Use the name field for new name.")
     @PutMapping("/rest/actors/{actor_id}")
     public void renameActorById(@PathVariable(value = "actor_id") long id,
-                                @RequestParam(value = "changeTo") Actor changeTo) {
-        actorService.renameActor(id, changeTo.getName());
+                                @RequestParam(value = "name") String changeTo) {
+        actorService.renameActor(id, changeTo);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
