@@ -20,6 +20,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 public class MovieController {
-
     private final MovieRepository movieRepository;
     private final ActorService actorService;
     private final DirectorService directorService;
@@ -233,6 +233,36 @@ public class MovieController {
     public Movie getOrCreateMovieByTitleAndYear(String title, String year) {
         return movieRepository.findByTitleAndYear(title, year)
                 .orElseGet(() -> Movie.builder().title(title).year(year).build());
+    }
+
+    @Operation(summary = "All Movies sorted by title")
+    @GetMapping("/rest/movies")
+    public List<Movie> getMovies() {
+        return movieService.getAllMovies();
+    }
+
+    @Operation(summary = "All Movies with this actor")
+    @GetMapping("/rest/movies/actors/{actor_id}")
+    public List<Movie> getMoviesByActor(@PathVariable(value = "actor_id") long id) {
+        return movieRepository.findByActorId(id);
+    }
+
+    @Operation(summary = "All Movies directed by this director")
+    @GetMapping("/rest/movies/directors/{director_id}")
+    public List<Movie> getMoviesByDirector(@PathVariable(value = "director_id") long id) {
+        return movieRepository.findByDirectorId(id);
+    }
+
+    @Operation(summary = "All Movies from thiw country")
+    @GetMapping("/rest/movies/countries/{country_id}")
+    public List<Movie> getMoviesByCountry(@PathVariable(value = "country_id") long id) {
+        return movieRepository.findByCountryIdOOrderByTitle(id);
+    }
+
+    @Operation(summary = "All Movies in this collection")
+    @GetMapping("/rest/movies/collections/{collection_id}")
+    public List<Movie> getMoviesByCollection(@PathVariable(value = "collection_id") long id) {
+        return movieRepository.findByCollectionId(id);
     }
 
     @Operation(summary = "Single Movie")
