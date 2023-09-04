@@ -12,13 +12,21 @@ public class Title {
     private String year;
 
     public Title(String titleAndYear) {
-        year = MovieUtils.replaceNoneWithEmpty(
-                titleAndYear.substring(titleAndYear.indexOf('(') + 1, titleAndYear.indexOf(')'))
+        name = extractTitle(titleAndYear);
+        year = extractYear(titleAndYear);
+    }
+
+    static public String extractYear(String titleAndYear) {
+        return MovieUtils.replaceNoneWithEmpty(
+                titleAndYear.substring(titleAndYear.lastIndexOf('(') + 1, titleAndYear.lastIndexOf(')'))
         );
-        name = titleAndYear.substring(0, titleAndYear.indexOf('(') - 1);
+    }
+
+    static public String extractTitle(String titleAndYear) {
+        return titleAndYear.substring(0, titleAndYear.lastIndexOf('(') - 1);
     }
 
     public String getDisplayName() {
-        return new String(name + " (" + year + ")");
+        return name + " (" + year + ")";
     }
 }
