@@ -178,7 +178,9 @@ public class MovieController {
         String[] names = delimitedNames.split(";");
         Set<Country> newSet = new HashSet<>();
         for (String name : names) {
-            newSet.add(countryService.getOrCreateCountry(name.trim()));
+			if (!name.isEmpty()) {
+				newSet.add(countryService.getOrCreateCountry(name.trim()));
+			}
         }
         return newSet;
     }
@@ -187,7 +189,9 @@ public class MovieController {
         String[] actorNames = delimitedNames.split(";");
         Set<Actor> newSet = new HashSet<>();
         for (String actorName : actorNames) {
+			if (!actorName.isEmpty()) {
             newSet.add(actorService.getOrCreateActor(actorName.trim()));
+		}
         }
         return newSet;
     }
@@ -202,7 +206,9 @@ public class MovieController {
         String[] names = delimitedNames.split(";");
         Set<Director> newSet = new HashSet<>();
         for (String name : names) {
-            newSet.add(directorService.getOrCreateDirector(name.trim()));
+			if (!name.isEmpty()) {
+				newSet.add(directorService.getOrCreateDirector(name.trim()));
+			}
         }
         return newSet;
     }
