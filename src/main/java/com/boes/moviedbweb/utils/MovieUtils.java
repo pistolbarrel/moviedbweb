@@ -3,6 +3,7 @@ package com.boes.moviedbweb.utils;
 import com.boes.moviedbweb.entity.ViewDate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 public class MovieUtils {
@@ -54,6 +55,17 @@ public class MovieUtils {
 
     public static String replaceNoneWithEmpty(String input) {
         return input.equals("NONE") ? "" : input;
+    }
+
+    public static String[] splitAndGroomNames(String delimitedNames) {
+        String[] splitNames = delimitedNames.split(";");
+        Set<String> newSet = new HashSet<>();
+        for (String split : splitNames) {
+            if (!split.isBlank()) {
+                newSet.add(split.trim());
+            }
+        }
+        return newSet.stream().toArray(String[]::new);
     }
 
 }

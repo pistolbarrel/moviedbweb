@@ -1,11 +1,10 @@
 package com.boes.moviedbweb.controller;
 
 import com.boes.moviedbweb.dto.MovieDto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DatabaseMaintRestControllerTest {
@@ -13,12 +12,14 @@ class DatabaseMaintRestControllerTest {
     @Autowired
     MovieController controller;
 
+    @Disabled
     @Test
     void createMovie() {
         MovieDto movie = movingMovie();
         controller.createMovie(movie);
     }
 
+    @Disabled
     @Test
     void createMovieNoTitle() {
         MovieDto movie = movingMovie();

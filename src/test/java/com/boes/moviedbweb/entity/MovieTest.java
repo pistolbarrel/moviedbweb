@@ -1,11 +1,9 @@
 package com.boes.moviedbweb.entity;
 
-import com.boes.moviedbweb.utils.MovieHtmlHelper;
 import com.boes.moviedbweb.utils.MovieUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MovieTest {
 
@@ -19,17 +17,19 @@ class MovieTest {
         movie.setDuration(MovieUtils.convertHHMMSSToInteger("1:07:30"));
 
         int a = 42;
+        assertEquals("One", movie.getTitle());
+        assertEquals("2222", movie.getYear());
+        assertEquals(4050, movie.getDuration());
     }
 
     @Test
     void testGetDisplayDuration()
     {
         Movie movie = Movie.builder()
-                .duration(4550)
+                .duration(4050)
                 .build();
 
         String result = MovieUtils.getDisplayDuration(movie.getDuration());
-        System.out.println("result = " + result);
-        int a = 42;
+        assertEquals("1:07:30", result);
     }
 }

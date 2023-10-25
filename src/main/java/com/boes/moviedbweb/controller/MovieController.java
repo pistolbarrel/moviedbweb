@@ -175,23 +175,19 @@ public class MovieController {
     }
 
     private Set<Country> getCountryDBInstances(String delimitedNames) {
-        String[] names = delimitedNames.split(";");
+        String[] names = MovieUtils.splitAndGroomNames(delimitedNames);
         Set<Country> newSet = new HashSet<>();
         for (String name : names) {
-			if (!name.isEmpty()) {
-				newSet.add(countryService.getOrCreateCountry(name.trim()));
-			}
+            newSet.add(countryService.getOrCreateCountry(name.trim()));
         }
         return newSet;
     }
 
     private Set<Actor> getActorDBInstances(String delimitedNames) {
-        String[] actorNames = delimitedNames.split(";");
+        String[] actorNames = MovieUtils.splitAndGroomNames(delimitedNames);
         Set<Actor> newSet = new HashSet<>();
         for (String actorName : actorNames) {
-			if (!actorName.isEmpty()) {
             newSet.add(actorService.getOrCreateActor(actorName.trim()));
-		}
         }
         return newSet;
     }
@@ -203,18 +199,16 @@ public class MovieController {
     }
 
     private Set<Director> getDirectorDBInstances(String delimitedNames) {
-        String[] names = delimitedNames.split(";");
+        String[] names = MovieUtils.splitAndGroomNames(delimitedNames);
         Set<Director> newSet = new HashSet<>();
         for (String name : names) {
-			if (!name.isEmpty()) {
-				newSet.add(directorService.getOrCreateDirector(name.trim()));
-			}
+            newSet.add(directorService.getOrCreateDirector(name.trim()));
         }
         return newSet;
     }
 
     private Set<Collection> getCollectionDBInstances(String delimitedNames) {
-        String[] names = delimitedNames.split(";");
+        String[] names = MovieUtils.splitAndGroomNames(delimitedNames);
         Set<Collection> newSet = new HashSet<>();
         for (String name : names) {
             newSet.add(collectionService.getOrCreateCollection(name.trim()));
@@ -223,7 +217,7 @@ public class MovieController {
     }
 
     private Set<ViewDate> getViewDateDBInstances(String delimitedDates) {
-        String[] dates = delimitedDates.split(";");
+        String[] dates = MovieUtils.splitAndGroomNames(delimitedDates);
         Set<ViewDate> newSet = new HashSet<>();
         for (String date : dates) {
             newSet.add(viewDateService.getOrCreateViewDate(LocalDate.parse(date.trim())));

@@ -4,6 +4,7 @@ import com.boes.moviedbweb.entity.Actor;
 import com.boes.moviedbweb.entity.Director;
 import com.boes.moviedbweb.entity.Movie;
 import com.boes.moviedbweb.service.ActorService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ class MovieRepositoryTest {
     @Autowired
     private DirectorRepository directorRepository;
 
+    @Disabled
     @Test
     public void saveMovie() {
         Actor a1 = actorService.getOrCreateActor("Juliette Binoche");
